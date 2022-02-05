@@ -10,11 +10,16 @@ const Wrapper = styled.div`
     position: relative;
     min-width: 200px;
     border-radius: 3px;
-    padding: 5px 15px 5px 15px;
+    max-width: 210px;
+    padding: 5px 15px 10px 15px;
 `
 const CardTitle = styled.p`
     color: #40516d;
     font-size: 19px;
+    white-space: wrap;
+    word-wrap: break-word;
+    
+
     font-weight: 500;
     margin-bottom: 10px;
 `
@@ -44,9 +49,11 @@ const AdditionalMenu = styled.div`
 `
 const AdditionalMenuInput = styled.textarea`
     position: relative;
-    width: 195px;
+    width: 185px;
     font-size: 17px;
     min-height: 40px;
+    padding-left: 10px;
+    padding-top: 5px;
     border-radius: 4px;
     resize: vertical;
     max-height: 200px;
