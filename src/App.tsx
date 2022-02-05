@@ -1,26 +1,32 @@
 import React from 'react';
-import logo from './logo.svg';
+import TrelelloApp from './TrelelloWorkingWindow/TrelelloApp';
+import AskingNameModalWindow from './AskingNameModalWindow/AskingNameModalWindow';
 import './App.css';
+import { useState } from 'react';
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+ 
+  let [UserNameInLocalStorage, SetName] = useState();
+
+  let ReadingUserNameFunction = (value:any) =>{
+      SetName(value);
+  }
+  
+    if(localStorage.getItem('TrelelloUserName') == undefined){
+      return(
+        <>
+          <AskingNameModalWindow ReadingUserNameFunction={ReadingUserNameFunction}></AskingNameModalWindow>
+        </>
+      )
+    }
+    else{
+      return(
+        <>
+          <TrelelloApp/>
+        </>
+      )
+    }
+  
 }
 
 export default App;
