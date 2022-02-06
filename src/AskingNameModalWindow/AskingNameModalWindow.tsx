@@ -1,5 +1,5 @@
 import React from "react";
-import { useState } from "react";
+/*import { useState } from "react";*/
 import styled from "styled-components";
 const Wrapper = styled.div`
     background-color: white;
@@ -57,7 +57,7 @@ const AskingNameModalWindow:React.FC<any> = (props) =>{
                 <Input placeholder="Put your name here" ref={InputField}></Input>
                 <Button onClick={()=>{
                     InputValue = InputField.current?.value;
-                    if(InputValue == ''){
+                    if(InputValue === ''){
                         alert('Put name');
                         return;
                     }

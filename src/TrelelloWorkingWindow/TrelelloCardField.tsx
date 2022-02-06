@@ -100,34 +100,25 @@ const TrelelloCardField = () =>{
     }
     const AddAnotherRowWrapperAddButtonFunc = () =>{
         let AddAnotherRowInputValue = AddAnotherRowInput.current?.value;
-        if(AddAnotherRowInputValue == '' ) return;
+        if(AddAnotherRowInputValue === '' ) return;
         let RowObject = {
             RowName : AddAnotherRowInputValue,
             Cards : [],
         }
-        
         setRowTitles(RowTitles.concat(RowObject)); 
-        
-        
-        
-        
-        
-        
-        
     }
     function AddingUsersCardFunction(InputValue:any, CurrentTitle:any){
         
         for(let i in RowTitles){
-            
-            if(RowTitles[i].RowName == CurrentTitle){
+            if(RowTitles[i].RowName === CurrentTitle){
                 let RowTitlesClone = RowTitles;
-                let OneElementRowTitlesClone = RowTitles[i];
+                let OneElementRowTitlesClone = RowTitlesClone[i];
                 OneElementRowTitlesClone.Cards.push(InputValue);
                 RowTitlesClone[i] = OneElementRowTitlesClone;
-                setRowTitles(RowTitlesClone);                
+                setRowTitles(RowTitlesClone);
             }
-            
         }
+        setRowTitles(RowTitles.concat([]));
     }
     
     

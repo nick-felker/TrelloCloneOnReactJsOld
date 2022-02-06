@@ -1,7 +1,6 @@
 import React from "react";
 import styled from "styled-components";
 import { useState } from "react";
-import { render } from "@testing-library/react";
 import Xicon from '../Images/X.png';
 
 const Wrapper = styled.div`
@@ -96,12 +95,9 @@ const AdditionalMenuUnderLineDeleteButtonImg = styled.img`
     opacity: 0.6;
     
 `
-const AddedCard = styled.p`
-    color: red;
-    font-size: 18px;
-`
 const Card = styled.p`
     color: #40516d;
+    opacity: 0.7;
     font-size: 19px;
     white-space: wrap;
     word-wrap: break-word;
@@ -110,7 +106,7 @@ const Card = styled.p`
 `
 
 const Row:React.FC<any> = (props:any) =>{
-    let [CardData, setNewCard] = useState(['']);
+    /*let [UserCardData, setNewCard] = useState(['']);*/
     
     let NewCardInputValue = React.useRef<HTMLTextAreaElement>(null);
     
@@ -136,7 +132,7 @@ const Row:React.FC<any> = (props:any) =>{
     const HidingAdditionalRowMenu = () =>{
         setFlag(true);
     }
-   console.log(typeof props.cardData)
+   
     return(
         <>
             <Wrapper>
@@ -146,7 +142,7 @@ const Row:React.FC<any> = (props:any) =>{
                 
             
                 
-                {showAddingMenu == true ? <AddCardButton onClick={ShowingAdditionalRowMenu}>Add a card</AddCardButton> : <AddingAdditionalMenuField props={props}></AddingAdditionalMenuField>}
+                {showAddingMenu === true ? <AddCardButton onClick={ShowingAdditionalRowMenu}>Add a card</AddCardButton> : <AddingAdditionalMenuField props={props}></AddingAdditionalMenuField>}
                 
             </Wrapper>
 
