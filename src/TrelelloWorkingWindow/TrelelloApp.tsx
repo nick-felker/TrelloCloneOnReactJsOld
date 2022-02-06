@@ -32,6 +32,7 @@ const MainBody = styled.body`
 const TrelelloApp = () =>{
     return(
         <>
+            
             <MainHeader>
                 <MainHeaderLogoText>
                     Trelello

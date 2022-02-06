@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { useState } from "react";
 import Row from "./Row";
 import Xicon from '../Images/X.png';
+import CardModalWindow from "../ModalWindows/CardModalWindow";
 
 const Wrapper = styled.div`
     display: flex;
@@ -82,7 +83,8 @@ const AddAnotherRowWrapperCancelButtonImg = styled.img`
 
 const TrelelloCardField = () =>{
     
-    let [RowTitles, setRowTitles] = useState(['Todo','In Progress', 'Testing', 'Done']);
+    /*let [RowTitles, setRowTitles] = useState(['Todo','In Progress', 'Testing', 'Done']);*/
+    let [RowTitles, setRowTitles] = useState<any[]>([{RowName : 'ToDo', Cards: []}, {RowName : 'In Progress', Cards: []}, {RowName : 'Testing', Cards: []}, {RowName : 'Done', Cards: []}, ]);
     let [AddAnotherRowFlag, setAddAnotherRowFlag] = useState(false);
     let AddAnotherRowInput = React.useRef<HTMLInputElement>(null);
     let AddAnotherRowFunction = () =>{
@@ -91,26 +93,57 @@ const TrelelloCardField = () =>{
     const AddAnotherRowCancelButtonFunc = () =>{
         setAddAnotherRowFlag(false);
     }
+    let [CardModalWindowFlag, setCardModalFlag] = useState(false);
+    
+    function HideCardModalWindowFunc(value:boolean) {
+        setCardModalFlag(value);
+    }
     const AddAnotherRowWrapperAddButtonFunc = () =>{
         let AddAnotherRowInputValue = AddAnotherRowInput.current?.value;
         if(AddAnotherRowInputValue == '' ) return;
-        let NewRow:any[] = [...RowTitles, AddAnotherRowInputValue];
-        setRowTitles(NewRow);
-        setAddAnotherRowFlag(false);
+        let RowObject = {
+            RowName : AddAnotherRowInputValue,
+            Cards : [],
+        }
+        
+        setRowTitles(RowTitles.concat(RowObject)); 
+        
+        
+        
+        
+        
+        
+        
     }
+    function AddingUsersCardFunction(InputValue:any, CurrentTitle:any){
+        
+        for(let i in RowTitles){
+            
+            if(RowTitles[i].RowName == CurrentTitle){
+                let RowTitlesClone = RowTitles;
+                let OneElementRowTitlesClone = RowTitles[i];
+                OneElementRowTitlesClone.Cards.push(InputValue);
+                RowTitlesClone[i] = OneElementRowTitlesClone;
+                setRowTitles(RowTitlesClone);                
+            }
+            
+        }
+    }
+    
+    
     return(
         <>
             <Wrapper>
-            
-            {RowTitles.map(title=>{ return <Row title={title}/>})}
-            {AddAnotherRowFlag == false ? <AddAnotherRow onClick={AddAnotherRowFunction}>Add another list</AddAnotherRow> 
+            {CardModalWindowFlag === false ? null : <CardModalWindow data={HideCardModalWindowFunc}></CardModalWindow >}
+            {RowTitles.map(title=>{ return <Row addingCardFunction={AddingUsersCardFunction} cardData={title.Cards} title={title.RowName}/>})}
+            {AddAnotherRowFlag === false ? <AddAnotherRow onClick={AddAnotherRowFunction}>Add another list</AddAnotherRow> 
             : <AddAnotherRowWrapper>
                 <AddAnotherRowWrapperInput placeholder="Enter list title" ref={AddAnotherRowInput}></AddAnotherRowWrapperInput>
                 <AddAnotherRowWrapperAddButton onClick={AddAnotherRowWrapperAddButtonFunc}>Add list</AddAnotherRowWrapperAddButton>
                 <AddAnotherRowWrapperCancelButton onClick={AddAnotherRowCancelButtonFunc}>
                     <AddAnotherRowWrapperCancelButtonImg src={Xicon}></AddAnotherRowWrapperCancelButtonImg>
                 </AddAnotherRowWrapperCancelButton>
-                        
+                
                     
             </AddAnotherRowWrapper>
             }

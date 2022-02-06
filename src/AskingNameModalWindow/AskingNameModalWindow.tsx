@@ -13,7 +13,7 @@ const Wrapper = styled.div`
     
 `
 const Input = styled.input`
-
+    padding: 20px 0px;
     outline: none;
     font-size: 20px;
     width: 320px;
@@ -54,7 +54,7 @@ const AskingNameModalWindow:React.FC<any> = (props) =>{
     return(
         <>
             <Wrapper>
-                <Input placeholder="Put your beautifull name here" ref={InputField}></Input>
+                <Input placeholder="Put your name here" ref={InputField}></Input>
                 <Button onClick={()=>{
                     InputValue = InputField.current?.value;
                     if(InputValue == ''){

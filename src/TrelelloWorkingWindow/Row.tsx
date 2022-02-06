@@ -18,8 +18,6 @@ const CardTitle = styled.p`
     font-size: 19px;
     white-space: wrap;
     word-wrap: break-word;
-    
-
     font-weight: 500;
     margin-bottom: 10px;
 `
@@ -50,6 +48,7 @@ const AdditionalMenu = styled.div`
 const AdditionalMenuInput = styled.textarea`
     position: relative;
     width: 185px;
+    border: none;
     font-size: 17px;
     min-height: 40px;
     padding-left: 10px;
@@ -101,20 +100,26 @@ const AddedCard = styled.p`
     color: red;
     font-size: 18px;
 `
+const Card = styled.p`
+    color: #40516d;
+    font-size: 19px;
+    white-space: wrap;
+    word-wrap: break-word;
+    font-weight: 500;
+    margin-bottom: 10px;
+`
 
 const Row:React.FC<any> = (props:any) =>{
     let [CardData, setNewCard] = useState(['']);
+    
     let NewCardInputValue = React.useRef<HTMLTextAreaElement>(null);
-    const AddNewCard = () =>{
-        let a = NewCardInputValue.current?.value;
-        
-    }
-    let AddingAdditionalMenuField = () =>{
+    
+    let AddingAdditionalMenuField:React.FC<any> = (props:any) =>{
         return(
             <AdditionalMenu>
                 <AdditionalMenuInput ref={NewCardInputValue}/>
                 <AdditionalMenuUnderLine>
-                    <AdditionalMenuUnderLineAddButton>Add card</AdditionalMenuUnderLineAddButton>
+                    <AdditionalMenuUnderLineAddButton onClick={()=>{props.props.addingCardFunction(NewCardInputValue.current?.value, props.props.title)}}> Add card</AdditionalMenuUnderLineAddButton>
                     <AdditionalMenuUnderLineDeleteButton onClick={HidingAdditionalRowMenu}>
                         <AdditionalMenuUnderLineDeleteButtonImg src={Xicon}></AdditionalMenuUnderLineDeleteButtonImg>
                     </AdditionalMenuUnderLineDeleteButton>
@@ -131,14 +136,17 @@ const Row:React.FC<any> = (props:any) =>{
     const HidingAdditionalRowMenu = () =>{
         setFlag(true);
     }
-    
+   console.log(typeof props.cardData)
     return(
         <>
             <Wrapper>
                 
                 <CardTitle>{props.title}</CardTitle>
-                {CardData.map(Elem=>{return <AddedCard>{Elem}</AddedCard>})}
-                {showAddingMenu == true ? <AddCardButton onClick={ShowingAdditionalRowMenu}>Add a card</AddCardButton> : <AddingAdditionalMenuField/>}
+                {props.cardData.map((elem:any)=>{return <Card>{elem}</Card>})}
+                
+            
+                
+                {showAddingMenu == true ? <AddCardButton onClick={ShowingAdditionalRowMenu}>Add a card</AddCardButton> : <AddingAdditionalMenuField props={props}></AddingAdditionalMenuField>}
                 
             </Wrapper>
 
