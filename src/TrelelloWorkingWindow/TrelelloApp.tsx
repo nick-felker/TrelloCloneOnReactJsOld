@@ -32,23 +32,24 @@ const MainBody = styled.body`
 
 const TrelelloApp = () =>{
     let [cardModalWindowFlag, setCardModalWindowFlag] = useState<boolean>(false);
-    let [cardModalWindowTitle, setCardModalWindowTitle] = useState<string | number>();
-    function getClickedCardTitleAndSetModalFlagTitle(title:string | number, flag:boolean){
+    let [cardModalWindowTitle, setCardModalWindowTitle] = useState<string>();
+    let [deleteCardFlag, setDeleteCardFlag] = useState(false);
+    function getClickedCardTitleAndSetModalFlagTitle(title:string, flag:boolean){
        setCardModalWindowTitle(title);
        setCardModalWindowFlag(flag)
-       
-
+    }
+    function activateDeleteCardButton(value:boolean){
+        setDeleteCardFlag(value);
+        setCardModalWindowFlag(false);
     }
    
     function hideCardModalWindow(flag:boolean){
         setCardModalWindowFlag(flag)
-
-       
     }
     
     return(
         <>
-            {cardModalWindowFlag === false ? <></> : <CardModalWindow hideCardModalWindow={hideCardModalWindow} modalWindowTitle={cardModalWindowTitle}></CardModalWindow>}
+            {cardModalWindowFlag === false ? <></> : <CardModalWindow activateDeleteCardButton={activateDeleteCardButton} hideCardModalWindow={hideCardModalWindow} modalWindowTitle={cardModalWindowTitle}></CardModalWindow>}
             <MainHeader>
                 <MainHeaderLogoText>
                     Trelello
@@ -58,7 +59,7 @@ const TrelelloApp = () =>{
                 </UserNameInMainHeader>
             </MainHeader>
             <MainBody>
-                <TrelelloCardField getClickedCardTitle={getClickedCardTitleAndSetModalFlagTitle}/>
+                <TrelelloCardField changeActivateDeleteButtonFlag={activateDeleteCardButton} activateDeleteCardButtonTitle={cardModalWindowTitle}  activateDeleteCardButtonFlag={deleteCardFlag} getClickedCardTitle={getClickedCardTitleAndSetModalFlagTitle}/>
             </MainBody>
             
         </>

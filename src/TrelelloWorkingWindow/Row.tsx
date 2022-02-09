@@ -146,7 +146,7 @@ const Row = (props:any) =>{
         )
     }
     let [showAddingMenu, setFlag] = useState(true);
-    
+    let CardTitleInputValue = React.useRef<HTMLInputElement>(null);
     
     const ShowingAdditionalRowMenu = () =>{
         setFlag(false);
@@ -156,14 +156,19 @@ const Row = (props:any) =>{
     }
     let [editRowTitleFlag, setEditRowTitleFlag] = useState(false);
     function handleKeyPress(e:any){
-      if(e.key === 'Enter') setEditRowTitleFlag(false);
+      if(e.key === 'Enter'){
+        setEditRowTitleFlag(false);
+        let newTitle = CardTitleInputValue.current?.value;
+        if (newTitle === '') return;
+        props.getEditedTitle(newTitle, props.title)
+      } 
     }
    
     return(
         <>
         
             <Wrapper>
-                {editRowTitleFlag === false ? <CardTitle onClick={()=>{setEditRowTitleFlag(true)}} >{props.title}</CardTitle> : <CardTitleInput onKeyDown={handleKeyPress} placeholder={props.title}></CardTitleInput>}
+                {editRowTitleFlag === false ? <CardTitle onClick={()=>{setEditRowTitleFlag(true)}} >{props.title}</CardTitle> : <CardTitleInput ref={CardTitleInputValue} onKeyDown={handleKeyPress} placeholder={props.title}></CardTitleInput>}
                 
                 
                 {props.cardData.map((elem:string|number)=>{return <Card onClick={()=>props.getClickedCardTitle(elem, true)}>{elem}</Card>})}

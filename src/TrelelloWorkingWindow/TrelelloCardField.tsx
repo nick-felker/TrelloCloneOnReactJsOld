@@ -86,12 +86,25 @@ const TrelelloCardField:React.FC<any> = (props) =>{
     /*let [RowTitles, setRowTitles] = useState(['Todo','In Progress', 'Testing', 'Done']);*/
     let [RowTitles, setRowTitles] = useState<any[]>([{RowName : 'ToDo', Cards: []}, {RowName : 'In Progress', Cards: []}, {RowName : 'Testing', Cards: []}, {RowName : 'Done', Cards: []}, ]);
     let [AddAnotherRowFlag, setAddAnotherRowFlag] = useState(false);
+    let [deleteCardFlag, setDeleteCardFlag] = useState(false);
     let AddAnotherRowInput = React.useRef<HTMLInputElement>(null);
     let AddAnotherRowFunction = () =>{
       setAddAnotherRowFlag(true);
     }
     const AddAnotherRowCancelButtonFunc = () =>{
         setAddAnotherRowFlag(false);
+    }
+    
+    if(props.activateDeleteCardButtonFlag === true){
+       let cloneRowTitles = RowTitles;
+       for(let i in cloneRowTitles){
+           for(let j in cloneRowTitles[i].Cards){
+                if(RowTitles[i].Cards[j] === props.activateDeleteCardButtonTitle){
+                    delete RowTitles[i].Cards[j];
+                }
+           }
+       }
+       props.changeActivateDeleteButtonFlag(false);
     }
     
     
@@ -119,13 +132,22 @@ const TrelelloCardField:React.FC<any> = (props) =>{
         }
         setRowTitles(RowTitles.concat([]));
     }
+    function setEditedRowTitle(newName:string, oldName:string){
+        let cloneRowTitles = RowTitles;
+        cloneRowTitles.map(elem=>{
+            if(elem.RowName === oldName) {elem.RowName = newName; return;}
+        })
+        setRowTitles(cloneRowTitles.concat([]));
+        console.log(RowTitles);
+        return;
+    }
     
     
     return(
         <>
             <Wrapper>
             
-            {RowTitles.map(title=>{ return <Row getClickedCardTitle={props.getClickedCardTitle} addingCardFunction={AddingUsersCardFunction} cardData={title.Cards} title={title.RowName}/>})}
+            {RowTitles.map(title=>{ return <Row getEditedTitle={setEditedRowTitle} getClickedCardTitle={props.getClickedCardTitle} addingCardFunction={AddingUsersCardFunction} cardData={title.Cards} title={title.RowName}/>})}
             {AddAnotherRowFlag === false ? <AddAnotherRow onClick={AddAnotherRowFunction}>Add another list</AddAnotherRow> 
             : <AddAnotherRowWrapper>
                 <AddAnotherRowWrapperInput placeholder="Enter list title" ref={AddAnotherRowInput}></AddAnotherRowWrapperInput>

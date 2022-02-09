@@ -55,6 +55,7 @@ const WindowOverlay = styled.div`
     justify-content: center;
     position: fixed;
     top:0;
+    margin-top: 5%;
     overflow: scroll;
     z-index: 11;
     width: 100%;
@@ -94,6 +95,7 @@ const DescriptionWrapperTextInput = styled.input`
     font-size: 20px;
     outline: none;
     position: relative;
+    height: 40px;
     width: 100%;
     padding: 5px 0px 5px 5px;
 `
@@ -199,7 +201,7 @@ const CardModalWindow:React.FC<any> = (props) =>{
                         </ModalWindowTitleWrapper>
                         <ModalWindowCloseButton>
                             <HideCardModalWindow onClick={()=>props.hideCardModalWindow(false)}>Close</HideCardModalWindow>
-                            <DeleteCardButton>Delete</DeleteCardButton>
+                            <DeleteCardButton onClick={()=>{props.activateDeleteCardButton(true)}}>Delete</DeleteCardButton>
                         </ModalWindowCloseButton>
                     </ModalWindowCloseButtonPlusTitleWrapper>
                     
