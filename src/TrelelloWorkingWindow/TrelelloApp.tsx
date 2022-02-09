@@ -2,7 +2,7 @@ import React from "react";
 import { useState } from "react";
 import styled from "styled-components";
 import TrelelloCardField from "./TrelelloCardField";
-
+import CardModalWindow from "../ModalWindows/CardModalWindow";
 
 const MainHeader = styled.div`
     height: 60px;
@@ -29,10 +29,26 @@ const MainBody = styled.body`
     background-color: white;
     padding-top: 60px;
 `
+
 const TrelelloApp = () =>{
+    let [cardModalWindowFlag, setCardModalWindowFlag] = useState<boolean>(false);
+    let [cardModalWindowTitle, setCardModalWindowTitle] = useState<string | number>();
+    function getClickedCardTitleAndSetModalFlagTitle(title:string | number, flag:boolean){
+       setCardModalWindowTitle(title);
+       setCardModalWindowFlag(flag)
+       
+
+    }
+   
+    function hideCardModalWindow(flag:boolean){
+        setCardModalWindowFlag(flag)
+
+       
+    }
+    
     return(
         <>
-            
+            {cardModalWindowFlag === false ? <></> : <CardModalWindow hideCardModalWindow={hideCardModalWindow} modalWindowTitle={cardModalWindowTitle}></CardModalWindow>}
             <MainHeader>
                 <MainHeaderLogoText>
                     Trelello
@@ -42,7 +58,7 @@ const TrelelloApp = () =>{
                 </UserNameInMainHeader>
             </MainHeader>
             <MainBody>
-                <TrelelloCardField/>
+                <TrelelloCardField getClickedCardTitle={getClickedCardTitleAndSetModalFlagTitle}/>
             </MainBody>
             
         </>

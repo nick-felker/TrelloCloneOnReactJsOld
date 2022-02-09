@@ -81,7 +81,7 @@ const AddAnotherRowWrapperCancelButtonImg = styled.img`
     height: 15px;
 `
 
-const TrelelloCardField = () =>{
+const TrelelloCardField:React.FC<any> = (props) =>{
     
     /*let [RowTitles, setRowTitles] = useState(['Todo','In Progress', 'Testing', 'Done']);*/
     let [RowTitles, setRowTitles] = useState<any[]>([{RowName : 'ToDo', Cards: []}, {RowName : 'In Progress', Cards: []}, {RowName : 'Testing', Cards: []}, {RowName : 'Done', Cards: []}, ]);
@@ -93,11 +93,9 @@ const TrelelloCardField = () =>{
     const AddAnotherRowCancelButtonFunc = () =>{
         setAddAnotherRowFlag(false);
     }
-    let [CardModalWindowFlag, setCardModalFlag] = useState(false);
     
-    function HideCardModalWindowFunc(value:boolean) {
-        setCardModalFlag(value);
-    }
+    
+    
     const AddAnotherRowWrapperAddButtonFunc = () =>{
         let AddAnotherRowInputValue = AddAnotherRowInput.current?.value;
         if(AddAnotherRowInputValue === '' ) return;
@@ -105,10 +103,11 @@ const TrelelloCardField = () =>{
             RowName : AddAnotherRowInputValue,
             Cards : [],
         }
-        setRowTitles(RowTitles.concat(RowObject)); 
+        setRowTitles(RowTitles.concat(RowObject));
+        setAddAnotherRowFlag(false);
     }
     function AddingUsersCardFunction(InputValue:any, CurrentTitle:any){
-        
+        if(InputValue === '') return ;
         for(let i in RowTitles){
             if(RowTitles[i].RowName === CurrentTitle){
                 let RowTitlesClone = RowTitles;
@@ -125,8 +124,8 @@ const TrelelloCardField = () =>{
     return(
         <>
             <Wrapper>
-            {CardModalWindowFlag === false ? null : <CardModalWindow data={HideCardModalWindowFunc}></CardModalWindow >}
-            {RowTitles.map(title=>{ return <Row addingCardFunction={AddingUsersCardFunction} cardData={title.Cards} title={title.RowName}/>})}
+            
+            {RowTitles.map(title=>{ return <Row getClickedCardTitle={props.getClickedCardTitle} addingCardFunction={AddingUsersCardFunction} cardData={title.Cards} title={title.RowName}/>})}
             {AddAnotherRowFlag === false ? <AddAnotherRow onClick={AddAnotherRowFunction}>Add another list</AddAnotherRow> 
             : <AddAnotherRowWrapper>
                 <AddAnotherRowWrapperInput placeholder="Enter list title" ref={AddAnotherRowInput}></AddAnotherRowWrapperInput>

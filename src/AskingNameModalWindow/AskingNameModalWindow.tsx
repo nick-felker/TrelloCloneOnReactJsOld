@@ -51,19 +51,20 @@ const Button = styled.button`
 const AskingNameModalWindow:React.FC<any> = (props) =>{
     let InputField = React.useRef<HTMLInputElement>(null);
     let InputValue:any;
+    const onSubmit = () => {
+        const InputValue = InputField.current?.value + '';
+        if(InputValue === ''){
+            alert('Put name');
+            return;
+        }
+        localStorage.setItem('TrelelloUserName', InputValue);
+        props.ReadingUserNameFunction(InputValue);
+    }
     return(
         <>
             <Wrapper>
                 <Input placeholder="Put your name here" ref={InputField}></Input>
-                <Button onClick={()=>{
-                    InputValue = InputField.current?.value;
-                    if(InputValue === ''){
-                        alert('Put name');
-                        return;
-                    }
-                    localStorage.setItem('TrelelloUserName', InputValue);
-                    props.ReadingUserNameFunction(InputValue);
-                }}>Submit</Button>
+                <Button onClick={onSubmit}>Submit</Button>
             </Wrapper>
            
         </>

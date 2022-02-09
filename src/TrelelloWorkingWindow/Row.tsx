@@ -19,6 +19,7 @@ const CardTitle = styled.p`
     word-wrap: break-word;
     font-weight: 500;
     margin-bottom: 10px;
+    cursor: pointer;
 `
 const AddCardButton = styled.button`
     font-size: 19px;
@@ -102,15 +103,22 @@ const Card = styled.p`
     white-space: wrap;
     word-wrap: break-word;
     font-weight: 500;
+    background-color: white;
     margin-bottom: 10px;
+    cursor: pointer;
+    padding: 4px 0px 8px 8px;
+    border-radius: 3px;
+    :hover{
+        background-color: #868b95;
+        transition: 0.5s;
+    }
 `
 
-const Row:React.FC<any> = (props:any) =>{
+const Row = (props:any) =>{
     /*let [UserCardData, setNewCard] = useState(['']);*/
     
     let NewCardInputValue = React.useRef<HTMLTextAreaElement>(null);
-    
-    let AddingAdditionalMenuField:React.FC<any> = (props:any) =>{
+    let AddingAdditionalMenuField = (props:any) =>{
         return(
             <AdditionalMenu>
                 <AdditionalMenuInput ref={NewCardInputValue}/>
@@ -132,20 +140,23 @@ const Row:React.FC<any> = (props:any) =>{
     const HidingAdditionalRowMenu = () =>{
         setFlag(true);
     }
+    
    
     return(
         <>
+        
             <Wrapper>
                 
-                <CardTitle>{props.title}</CardTitle>
-                {props.cardData.map((elem:any)=>{return <Card>{elem}</Card>})}
+                <CardTitle >{props.title}</CardTitle>
+                
+                {props.cardData.map((elem:string|number)=>{return <Card onClick={()=>props.getClickedCardTitle(elem, true)}>{elem}</Card>})}
                 
             
                 
                 {showAddingMenu === true ? <AddCardButton onClick={ShowingAdditionalRowMenu}>Add a card</AddCardButton> : <AddingAdditionalMenuField props={props}></AddingAdditionalMenuField>}
                 
             </Wrapper>
-
+            
         </>
     )
 }
