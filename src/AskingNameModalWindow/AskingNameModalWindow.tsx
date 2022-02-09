@@ -50,7 +50,6 @@ const Button = styled.button`
 
 const AskingNameModalWindow:React.FC<any> = (props) =>{
     let InputField = React.useRef<HTMLInputElement>(null);
-    let InputValue:any;
     const onSubmit = () => {
         const InputValue = InputField.current?.value + '';
         if(InputValue === ''){

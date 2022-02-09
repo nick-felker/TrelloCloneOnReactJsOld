@@ -21,6 +21,20 @@ const CardTitle = styled.p`
     margin-bottom: 10px;
     cursor: pointer;
 `
+const CardTitleInput = styled.input`
+    color: #40516d;
+    font-size: 19px;
+    position: relative;
+    max-width:85%;
+    margin-bottom: 15px;
+    overflow: visible;
+    outline: none;
+    border: 1px solid #0079bf;
+    border-radius: 3px;
+    font-weight: 500;
+    cursor: pointer;
+    background-color: white ;
+`
 const AddCardButton = styled.button`
     font-size: 19px;
     border: none;
@@ -123,7 +137,7 @@ const Row = (props:any) =>{
             <AdditionalMenu>
                 <AdditionalMenuInput ref={NewCardInputValue}/>
                 <AdditionalMenuUnderLine>
-                    <AdditionalMenuUnderLineAddButton onClick={()=>{props.props.addingCardFunction(NewCardInputValue.current?.value, props.props.title)}}> Add card</AdditionalMenuUnderLineAddButton>
+                    <AdditionalMenuUnderLineAddButton  onClick={()=>{props.props.addingCardFunction(NewCardInputValue.current?.value, props.props.title)}}> Add card</AdditionalMenuUnderLineAddButton>
                     <AdditionalMenuUnderLineDeleteButton onClick={HidingAdditionalRowMenu}>
                         <AdditionalMenuUnderLineDeleteButtonImg src={Xicon}></AdditionalMenuUnderLineDeleteButtonImg>
                     </AdditionalMenuUnderLineDeleteButton>
@@ -140,14 +154,17 @@ const Row = (props:any) =>{
     const HidingAdditionalRowMenu = () =>{
         setFlag(true);
     }
-    
+    let [editRowTitleFlag, setEditRowTitleFlag] = useState(false);
+    function handleKeyPress(e:any){
+      if(e.key === 'Enter') setEditRowTitleFlag(false);
+    }
    
     return(
         <>
         
             <Wrapper>
+                {editRowTitleFlag === false ? <CardTitle onClick={()=>{setEditRowTitleFlag(true)}} >{props.title}</CardTitle> : <CardTitleInput onKeyDown={handleKeyPress} placeholder={props.title}></CardTitleInput>}
                 
-                <CardTitle >{props.title}</CardTitle>
                 
                 {props.cardData.map((elem:string|number)=>{return <Card onClick={()=>props.getClickedCardTitle(elem, true)}>{elem}</Card>})}
                 

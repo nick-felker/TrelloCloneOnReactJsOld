@@ -2,15 +2,14 @@ import React from 'react';
 import TrelelloApp from './TrelelloWorkingWindow/TrelelloApp';
 import AskingNameModalWindow from './AskingNameModalWindow/AskingNameModalWindow';
 import './App.css';
-import CardModalWindow from './ModalWindows/CardModalWindow';
 import { useState } from 'react';
 
 function App() {
  
-  let [UserNameInLocalStorage, SetName] = useState();
+  let [UserNameInLocalStorage, SetUserNameInLocalStorage] = useState();
   
   let ReadingUserNameFunction = (value:any) =>{
-      SetName(value);
+      SetUserNameInLocalStorage(value);
   }
   
   
