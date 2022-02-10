@@ -84,9 +84,10 @@ const TrelelloCardField:React.FC<any> = (props) =>{
     let [rowTitles, setRowTitles] = useState<any[]>([{RowName : 'ToDo', Cards: []}, {RowName : 'In Progress', Cards: []}, {RowName : 'Testing', Cards: []}, {RowName : 'Done', Cards: []}, ]);
     let [addAnotherRowFlag, setAddAnotherRowFlag] = useState<boolean>(false);
     useEffect(()=>{
-        let cloneRowTitles:any = localStorage.getItem('RowTitles') || rowTitles;
-        setRowTitles(JSON.parse(cloneRowTitles));
+        let cloneRowTitles = localStorage.getItem('RowTitles');
+        cloneRowTitles != null ? setRowTitles(JSON.parse(cloneRowTitles)) : setRowTitles(rowTitles)
     }, [])
+    
     useEffect(()=>{
         localStorage.setItem('RowTitles', JSON.stringify(rowTitles));
     }, [rowTitles])
