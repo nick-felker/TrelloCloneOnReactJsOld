@@ -13,14 +13,12 @@ function App() {
   }
   
   
-    return Boolean(localStorage.getItem("TrelelloUserName")) ? (
-    <TrelelloApp /> 
-    
-  ) : (
+    return Boolean(localStorage.getItem("TrelelloUserName")) ? (<TrelelloApp /> ) : 
+    (
     <AskingNameModalWindow
       ReadingUserNameFunction={ReadingUserNameFunction}
     ></AskingNameModalWindow>
-  );
+    );
   
   
 }

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-
+//StyledBlock
 const CardModalWindowWrapper = styled.div`
     padding-bottom: 100px;
     z-index: 11;
@@ -8,8 +8,7 @@ const CardModalWindowWrapper = styled.div`
     background-color: white;
     border-radius: 5px;
     width: 1000px;
-    min-heigth: 400px;
-    
+    min-heigth: 400px;    
 `
 const BlackLayer = styled.div`
     background-color: #505765;
@@ -66,7 +65,6 @@ const ModalTitleWrapper = styled.div`
     width: 700px;
     min-width: 200px;
     margin: 20px 0px 0px 20px;
-
 `
 const ModalTitle = styled.p`
     font-size: 25px;
@@ -78,7 +76,6 @@ const ModalTitle = styled.p`
 const ListOwner = styled.p`
     font-size: 20px;
     color: #223556;
-    
     padding-left: 20px;
 `
 const DescriptionWrapper = styled.div`
@@ -89,7 +86,6 @@ const DescriptionWrapper = styled.div`
 const DescriptionWrapperTitle = styled.p`
     font-size: 20px;
     margin-bottom: 10px;
-    
 `
 const DescriptionWrapperTextInput = styled.input`
     font-size: 20px;
@@ -155,43 +151,37 @@ const NewComment = styled.p`
     margin: 15px 0px;
     padding: 10px 0px 10px 20px;
     border-radius: 7px;
-
     background-color: #eaecf0; 
 `
 const ModalWindowCloseButtonPlusTitleWrapper = styled.div`
     display: flex;
-    
 `
-const ModalWindowTitleWrapper = styled.div`
-    
-`
-const ModalWindowCloseButton = styled.div`
-
-`
-
+const ModalWindowTitleWrapper = styled.div``
+const ModalWindowCloseButton = styled.div``
+const Wrapper = styled.div``
 const CardModalWindow:React.FC<any> = (props) =>{
-   let [editDescriptionFlag, setEditDescriptionFlag] = useState<boolean>(false);
-   let [descriptionContain, setDescriptionContain] = useState<string>('Add a more detailed description...');
-   function saveNewDescription(e:any){
-       if(e.key === 'Enter'){
-           let descriptionInputValue = DescriptionInputFieldValue.current?.value + '';
+    let [editDescriptionFlag, setEditDescriptionFlag] = useState<boolean>(false);
+    let [descriptionContain, setDescriptionContain] = useState<string>('Add a more detailed description...');
+    function saveNewDescription(e:any){
+        if(e.key === 'Enter'){
+            let descriptionInputValue = DescriptionInputFieldValue.current?.value + '';
             setDescriptionContain(descriptionInputValue);
             setEditDescriptionFlag(false);
-       }
+        }
         
-   }
-   let [commentsList, setCommentsList] = useState<any[]>([]);
-   let DescriptionInputFieldValue = React.useRef<HTMLInputElement>(null);
-   let CommentsInputFieldValue = React.useRef<HTMLInputElement>(null);
-   function AddNewCommentFunction(){
+    }
+    let [commentsList, setCommentsList] = useState<any[]>([]);
+    let DescriptionInputFieldValue = React.useRef<HTMLInputElement>(null);
+    let CommentsInputFieldValue = React.useRef<HTMLInputElement>(null);
+    function AddNewCommentFunction(){
     let comment = [CommentsInputFieldValue.current?.value];
     if(CommentsInputFieldValue.current?.value === '') return;
     setCommentsList(commentsList.concat(comment));
     
     
-   }
+    }
     return(
-        <>  
+        <Wrapper>  
             <WindowOverlay>
                 <CardModalWindowWrapper>
                     <ModalWindowCloseButtonPlusTitleWrapper>
@@ -217,18 +207,15 @@ const CardModalWindow:React.FC<any> = (props) =>{
                         
                         {commentsList.map(comment=>{
                             return(<>
-                            <CommentOwner>{localStorage.getItem('TrelelloUserName')}</CommentOwner>
-                            <NewComment>{comment}</NewComment>
-                            </>
-                            
-                            ) 
-                            })}
+                                    <CommentOwner>{localStorage.getItem('TrelelloUserName')}</CommentOwner>
+                                    <NewComment>{comment}</NewComment>
+                            </>) })}
                     </CommentsWrapper>
                     
                 </CardModalWindowWrapper>
                     <BlackLayer onClick={()=>{props.hideCardModalWindow(false)}}></BlackLayer>
             </WindowOverlay>
-        </>
+        </Wrapper>
     )
 }
 

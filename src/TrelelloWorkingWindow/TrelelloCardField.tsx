@@ -1,9 +1,8 @@
 import React from "react";
 import styled from "styled-components";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Row from "./Row";
 import Xicon from '../Images/X.png';
-import CardModalWindow from "../ModalWindows/CardModalWindow";
 
 const Wrapper = styled.div`
     display: flex;
@@ -77,81 +76,94 @@ const AddAnotherRowWrapperCancelButton = styled.button`
 const AddAnotherRowWrapperCancelButtonImg = styled.img`
     width: 15px;
     opacity: 0.7;
-    
     height: 15px;
 `
 
 const TrelelloCardField:React.FC<any> = (props) =>{
-    
     /*let [RowTitles, setRowTitles] = useState(['Todo','In Progress', 'Testing', 'Done']);*/
-    let [RowTitles, setRowTitles] = useState<any[]>([{RowName : 'ToDo', Cards: []}, {RowName : 'In Progress', Cards: []}, {RowName : 'Testing', Cards: []}, {RowName : 'Done', Cards: []}, ]);
-    let [AddAnotherRowFlag, setAddAnotherRowFlag] = useState(false);
-    let [deleteCardFlag, setDeleteCardFlag] = useState(false);
+    let [rowTitles, setRowTitles] = useState<any[]>([{RowName : 'ToDo', Cards: []}, {RowName : 'In Progress', Cards: []}, {RowName : 'Testing', Cards: []}, {RowName : 'Done', Cards: []}, ]);
+    let [addAnotherRowFlag, setAddAnotherRowFlag] = useState<boolean>(false);
+    useEffect(()=>{
+        let cloneRowTitles:any = localStorage.getItem('RowTitles') || rowTitles;
+        setRowTitles(JSON.parse(cloneRowTitles));
+    }, [])
+    useEffect(()=>{
+        localStorage.setItem('RowTitles', JSON.stringify(rowTitles));
+    }, [rowTitles])
+    
+    
     let AddAnotherRowInput = React.useRef<HTMLInputElement>(null);
     let AddAnotherRowFunction = () =>{
       setAddAnotherRowFlag(true);
+      localStorage.setItem('aboba', 'true');
     }
     const AddAnotherRowCancelButtonFunc = () =>{
         setAddAnotherRowFlag(false);
     }
     
-    if(props.activateDeleteCardButtonFlag === true){
-       let cloneRowTitles = RowTitles;
-       for(let i in cloneRowTitles){
-           for(let j in cloneRowTitles[i].Cards){
-                if(RowTitles[i].Cards[j] === props.activateDeleteCardButtonTitle){
-                    delete RowTitles[i].Cards[j];
+    useEffect(()=>{
+            let cloneRowTitles = rowTitles;
+            for(let i in cloneRowTitles){
+                for(let j in cloneRowTitles[i].Cards){
+                     if(rowTitles[i].Cards[j] === props.activateDeleteCardButtonTitle){
+                          rowTitles[i].Cards[j]  = Array.prototype.slice.call(rowTitles[i].Cards[j]); // Array
+                          rowTitles[i].Cards.splice(j, 1);
+                          
+                     }
                 }
-           }
-       }
-       props.changeActivateDeleteButtonFlag(false);
-    }
+            } 
+            localStorage.setItem('RowTitles', JSON.stringify(rowTitles));
+            props.changeActivateDeleteButtonFlag(false);
+            
+    }, [props.activateDeleteCardButtonFlag])
     
     
     
-    const AddAnotherRowWrapperAddButtonFunc = () =>{
+    
+    const addAnotherRowWrapperAddButtonFunc = () =>{
         let AddAnotherRowInputValue = AddAnotherRowInput.current?.value;
         if(AddAnotherRowInputValue === '' ) return;
         let RowObject = {
             RowName : AddAnotherRowInputValue,
             Cards : [],
         }
-        setRowTitles(RowTitles.concat(RowObject));
+        setRowTitles(rowTitles.concat(RowObject));
         setAddAnotherRowFlag(false);
+        
     }
-    function AddingUsersCardFunction(InputValue:any, CurrentTitle:any){
+    function addingUsersCardFunction(InputValue:any, CurrentTitle:any){
         if(InputValue === '') return ;
-        for(let i in RowTitles){
-            if(RowTitles[i].RowName === CurrentTitle){
-                let RowTitlesClone = RowTitles;
+        for(let i in rowTitles){
+            if(rowTitles[i].RowName === CurrentTitle){
+                let RowTitlesClone = rowTitles;
                 let OneElementRowTitlesClone = RowTitlesClone[i];
                 OneElementRowTitlesClone.Cards.push(InputValue);
                 RowTitlesClone[i] = OneElementRowTitlesClone;
                 setRowTitles(RowTitlesClone);
+                
             }
         }
-        setRowTitles(RowTitles.concat([]));
+        setRowTitles(rowTitles.concat([]));
     }
     function setEditedRowTitle(newName:string, oldName:string){
-        let cloneRowTitles = RowTitles;
+        let cloneRowTitles = rowTitles;
         cloneRowTitles.map(elem=>{
-            if(elem.RowName === oldName) {elem.RowName = newName; return;}
+            if(elem.RowName === oldName) { return elem.RowName = newName; }
         })
         setRowTitles(cloneRowTitles.concat([]));
-        console.log(RowTitles);
+        
         return;
     }
     
     
     return(
-        <>
-            <Wrapper>
+        <Wrapper>
             
-            {RowTitles.map(title=>{ return <Row getEditedTitle={setEditedRowTitle} getClickedCardTitle={props.getClickedCardTitle} addingCardFunction={AddingUsersCardFunction} cardData={title.Cards} title={title.RowName}/>})}
-            {AddAnotherRowFlag === false ? <AddAnotherRow onClick={AddAnotherRowFunction}>Add another list</AddAnotherRow> 
+            {rowTitles.map(title=>{ return <Row  getEditedTitle={setEditedRowTitle} getClickedCardTitle={props.getClickedCardTitle}  addingCardFunction={addingUsersCardFunction} cardData={title.Cards} title={title.RowName}/>})}
+            {addAnotherRowFlag === false ? <AddAnotherRow onClick={AddAnotherRowFunction}>Add another list</AddAnotherRow> 
             : <AddAnotherRowWrapper>
                 <AddAnotherRowWrapperInput placeholder="Enter list title" ref={AddAnotherRowInput}></AddAnotherRowWrapperInput>
-                <AddAnotherRowWrapperAddButton onClick={AddAnotherRowWrapperAddButtonFunc}>Add list</AddAnotherRowWrapperAddButton>
+                <AddAnotherRowWrapperAddButton onClick={addAnotherRowWrapperAddButtonFunc}>Add list</AddAnotherRowWrapperAddButton>
                 <AddAnotherRowWrapperCancelButton onClick={AddAnotherRowCancelButtonFunc}>
                     <AddAnotherRowWrapperCancelButtonImg src={Xicon}></AddAnotherRowWrapperCancelButtonImg>
                 </AddAnotherRowWrapperCancelButton>
@@ -160,8 +172,7 @@ const TrelelloCardField:React.FC<any> = (props) =>{
             </AddAnotherRowWrapper>
             }
             </Wrapper>
-            
-        </>
+        
     )
 }
 export default TrelelloCardField;
