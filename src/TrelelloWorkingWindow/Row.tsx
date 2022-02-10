@@ -15,6 +15,7 @@ const Wrapper = styled.div`
 const CardTitle = styled.p`
     color: #40516d;
     font-size: 19px;
+    padding-top: 10px;
     white-space: wrap;
     word-wrap: break-word;
     font-weight: 500;
@@ -23,6 +24,7 @@ const CardTitle = styled.p`
 `
 const CardTitleInput = styled.input`
     color: #40516d;
+    margin-top: 15px;
     font-size: 19px;
     position: relative;
     max-width:85%;
@@ -127,6 +129,28 @@ const Card = styled.p`
         transition: 0.5s;
     }
 `
+const TitleWrapper = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    
+`
+const DeleteRowButton = styled.button`
+    padding: 4px 4px 1px 4px;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    :hover{
+        opacity: 0.3;
+        transition: 0.5s;
+    }
+    background-color:  #ebecf0
+`
+const DeleteRowButtonImage = styled.img`
+    width: 20px;
+    opacity: 0.4;
+    height: 20px;
+`
 
 const Row = (props:any) =>{
     /*let [UserCardData, setNewCard] = useState(['']);*/
@@ -168,8 +192,10 @@ const Row = (props:any) =>{
         <>
         
             <Wrapper>
+                <TitleWrapper>
                 {editRowTitleFlag === false ? <CardTitle onClick={()=>{setEditRowTitleFlag(true)}} >{props.title}</CardTitle> : <CardTitleInput ref={CardTitleInputValue} onKeyDown={handleKeyPress} placeholder={props.title}></CardTitleInput>}
-                
+                <DeleteRowButton onClick={()=>{props.deleteRowFunction(props.title)}}><DeleteRowButtonImage src={Xicon}></DeleteRowButtonImage></DeleteRowButton>
+                </TitleWrapper>
                 
                 {props.cardData.map((elem:string|number)=>{return <Card onClick={()=>props.getClickedCardTitle(elem, true)}>{elem}</Card>})}
                 

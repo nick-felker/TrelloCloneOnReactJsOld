@@ -155,12 +155,22 @@ const TrelelloCardField:React.FC<any> = (props) =>{
         
         return;
     }
+    function deleteRowFunction(neededTitle:string){
+        let cloneRowTitles = rowTitles;
+        for(let i in cloneRowTitles){
+            if(cloneRowTitles[i].RowName === neededTitle){
+                cloneRowTitles.splice(parseInt(i), 1);
+            }
+        }
+        setRowTitles(cloneRowTitles.concat([]));
+        
+    }
     
     
     return(
         <Wrapper>
             
-            {rowTitles.map(title=>{ return <Row  getEditedTitle={setEditedRowTitle} getClickedCardTitle={props.getClickedCardTitle}  addingCardFunction={addingUsersCardFunction} cardData={title.Cards} title={title.RowName}/>})}
+            {rowTitles.map(title=>{ return <Row deleteRowFunction={deleteRowFunction} getEditedTitle={setEditedRowTitle} getClickedCardTitle={props.getClickedCardTitle}  addingCardFunction={addingUsersCardFunction} cardData={title.Cards} title={title.RowName}/>})}
             {addAnotherRowFlag === false ? <AddAnotherRow onClick={AddAnotherRowFunction}>Add another list</AddAnotherRow> 
             : <AddAnotherRowWrapper>
                 <AddAnotherRowWrapperInput placeholder="Enter list title" ref={AddAnotherRowInput}></AddAnotherRowWrapperInput>
