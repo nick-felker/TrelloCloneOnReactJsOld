@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { useState } from "react";
-import Xicon from '../Images/X.png';
+import Xicon from '../../Images/X.png';
 
 const Wrapper = styled.div`
     background-color: #ebecf0;
@@ -110,7 +110,6 @@ const AdditionalMenuUnderLineDeleteButtonImg = styled.img`
     padding: 6px 6px 2px 6px; 
     height: 20px;
     opacity: 0.6;
-    
 `
 const Card = styled.p`
     color: #40516d;
@@ -154,7 +153,9 @@ const DeleteRowButtonImage = styled.img`
 
 const Row = (props:any) =>{
     /*let [UserCardData, setNewCard] = useState(['']);*/
-    
+    let [showAddingMenu, setFlag] = useState(true);
+    let [editRowTitleFlag, setEditRowTitleFlag] = useState(false);
+    let CardTitleInputValue = React.useRef<HTMLInputElement>(null);
     let NewCardInputValue = React.useRef<HTMLTextAreaElement>(null);
     let AddingAdditionalMenuField = (props:any) =>{
         return(
@@ -169,16 +170,11 @@ const Row = (props:any) =>{
             </AdditionalMenu>
         )
     }
-    let [showAddingMenu, setFlag] = useState(true);
-    let CardTitleInputValue = React.useRef<HTMLInputElement>(null);
     
-    const ShowingAdditionalRowMenu = () =>{
-        setFlag(false);
-    }
-    const HidingAdditionalRowMenu = () =>{
-        setFlag(true);
-    }
-    let [editRowTitleFlag, setEditRowTitleFlag] = useState(false);
+    const ShowingAdditionalRowMenu = () => setFlag(false);
+
+    const HidingAdditionalRowMenu = () => setFlag(true);
+    
     function handleKeyPress(e:any){
       if(e.key === 'Enter'){
         setEditRowTitleFlag(false);
@@ -193,11 +189,10 @@ const Row = (props:any) =>{
         
             <Wrapper>
                 <TitleWrapper>
-                {editRowTitleFlag === false ? <CardTitle onClick={()=>{setEditRowTitleFlag(true)}} >{props.title}</CardTitle> : <CardTitleInput ref={CardTitleInputValue} onKeyDown={handleKeyPress} placeholder={props.title}></CardTitleInput>}
+                {editRowTitleFlag === false ? <CardTitle onClick={()=>{setEditRowTitleFlag(true)}} >{props.title}</CardTitle> : <CardTitleInput  ref={CardTitleInputValue} onKeyDown={handleKeyPress} placeholder={props.title}></CardTitleInput>}
                 <DeleteRowButton onClick={()=>{props.deleteRowFunction(props.title)}}><DeleteRowButtonImage src={Xicon}></DeleteRowButtonImage></DeleteRowButton>
                 </TitleWrapper>
-                
-                {props.cardData.map((elem:string|number)=>{return <Card onClick={()=>props.getClickedCardTitle(elem, true)}>{elem}</Card>})}
+                {props.cardData.map((elem:any)=>{return <Card key={props.cardData.indexOf(elem, 0)} onClick={()=>props.getClickedCardTitle(elem.CardName, true)}>{elem.CardName}</Card>})}
                 
             
                 

@@ -1,8 +1,8 @@
 import React from "react";
 import styled from "styled-components";
 import { useState, useEffect } from "react";
-import Row from "./Row";
-import Xicon from '../Images/X.png';
+import Row from "../Row/Row";
+import Xicon from '../../Images/X.png';
 
 const Wrapper = styled.div`
     display: flex;
@@ -83,44 +83,92 @@ const TrelelloCardField:React.FC<any> = (props) =>{
     /*let [RowTitles, setRowTitles] = useState(['Todo','In Progress', 'Testing', 'Done']);*/
     let [rowTitles, setRowTitles] = useState<any[]>([{RowName : 'ToDo', Cards: []}, {RowName : 'In Progress', Cards: []}, {RowName : 'Testing', Cards: []}, {RowName : 'Done', Cards: []}, ]);
     let [addAnotherRowFlag, setAddAnotherRowFlag] = useState<boolean>(false);
+    let AddAnotherRowInput = React.useRef<HTMLInputElement>(null);
+    useEffect(()=>{
+        let cloneRowTitles = rowTitles;
+        for(let i in cloneRowTitles){
+            for(let j in cloneRowTitles[i].Cards){
+                if(cloneRowTitles[i].Cards[j].CardName === props.activateDeleteCardButtonTitle){
+                    cloneRowTitles[i].Cards[j].CardDescription = props.takeDescriptionContainFromTrelelloApp;
+                    setRowTitles(cloneRowTitles.concat([]))
+                    break;
+                }
+            }
+        }
+    }, [props.takeDescriptionContainFromTrelelloApp])
+    useEffect(()=>{
+        let cloneRowTitles = rowTitles;
+        for(let i in cloneRowTitles){
+            for(let j in cloneRowTitles[i].Cards){
+                if(cloneRowTitles[i].Cards[j].CardName === props.activateDeleteCardButtonTitle){
+                    cloneRowTitles[i].Cards[j].CardName = props.takeRenameCardTitle;
+                    setRowTitles(cloneRowTitles.concat([]))
+                    props.setCardModalWindowTitleFunction(props.takeRenameCardTitle);
+                    break;
+                }
+            }
+        }
+    }, [props.takeRenameCardTitle])
     useEffect(()=>{
         let cloneRowTitles = localStorage.getItem('RowTitles');
-        cloneRowTitles != null ? setRowTitles(JSON.parse(cloneRowTitles)) : setRowTitles(rowTitles)
+        cloneRowTitles != null ? setRowTitles(JSON.parse(cloneRowTitles)) : setRowTitles(rowTitles);
     }, [])
     
+   
+
+    useEffect(()=>{
+        let cloneRowTitles = rowTitles;
+        for(let i in cloneRowTitles){
+            for(let j in cloneRowTitles[i].Cards){
+                if(cloneRowTitles[i].Cards[j].CardName === props.activateDeleteCardButtonTitle){
+                    cloneRowTitles[i].Cards[j].CardComments = props.commentsList;
+                    setRowTitles(cloneRowTitles.concat([]));
+                    break;
+                }
+            }
+        }
+    }, [props.commentsList]) 
     useEffect(()=>{
         localStorage.setItem('RowTitles', JSON.stringify(rowTitles));
+        props.rowTitlesArrayToTrelelloApp(rowTitles);
     }, [rowTitles])
     
-    
-    let AddAnotherRowInput = React.useRef<HTMLInputElement>(null);
-    let AddAnotherRowFunction = () =>{
-      setAddAnotherRowFlag(true);
-      localStorage.setItem('aboba', 'true');
-    }
-    const AddAnotherRowCancelButtonFunc = () =>{
-        setAddAnotherRowFlag(false);
-    }
-    
     useEffect(()=>{
-            let cloneRowTitles = rowTitles;
-            for(let i in cloneRowTitles){
-                for(let j in cloneRowTitles[i].Cards){
-                     if(rowTitles[i].Cards[j] === props.activateDeleteCardButtonTitle){
-                          rowTitles[i].Cards[j]  = Array.prototype.slice.call(rowTitles[i].Cards[j]); // Array
-                          rowTitles[i].Cards.splice(j, 1);
-                          
-                     }
+        
+        if(props.takeDeleteCommentName === undefined) return;
+        let cloneRowTitles = rowTitles;
+        for(let i in cloneRowTitles){
+            for(let j in cloneRowTitles[i].Cards){
+                for(let y in cloneRowTitles[i].Cards[j].CardComments){
+                    if(cloneRowTitles[i].Cards[j].CardComments[y] === props.takeDeleteCommentName){
+                        cloneRowTitles[i].Cards[j].CardComments.splice(y, 1);
+                        setRowTitles(cloneRowTitles.concat([]))
+                        
+                        break;
+                    }
                 }
-            } 
-            localStorage.setItem('RowTitles', JSON.stringify(rowTitles));
-            props.changeActivateDeleteButtonFlag(false);
-            
-    }, [props.activateDeleteCardButtonFlag])
+            }
+        }
+    }, [props.takeDeleteCommentName])
+
+    useEffect(()=>{
+        for(let i in rowTitles){
+            for(let j in rowTitles[i].Cards){
+                 if(rowTitles[i].Cards[j].CardName === props.activateDeleteCardButtonTitle){
+                      rowTitles[i].Cards  = Array.prototype.slice.call(rowTitles[i].Cards); // Array
+                      rowTitles[i].Cards.splice(j, 1);
+                      break;
+                 }
+            }
+        } 
+        localStorage.setItem('RowTitles', JSON.stringify(rowTitles));
+        props.changeActivateDeleteButtonFlag(false);
+        
+}, [props.activateDeleteCardButtonFlag])
     
-    
-    
-    
+    let AddAnotherRowFunction = () => setAddAnotherRowFlag(true);
+
+    const AddAnotherRowCancelButtonFunc = () => setAddAnotherRowFlag(false);
     const addAnotherRowWrapperAddButtonFunc = () =>{
         let AddAnotherRowInputValue = AddAnotherRowInput.current?.value;
         if(AddAnotherRowInputValue === '' ) return;
@@ -132,16 +180,19 @@ const TrelelloCardField:React.FC<any> = (props) =>{
         setAddAnotherRowFlag(false);
         
     }
-    function addingUsersCardFunction(InputValue:any, CurrentTitle:any){
-        if(InputValue === '') return ;
+    function addingUsersCardFunction(InputValue:string, CurrentTitle:string){
+        let PureInputValue = InputValue.trim();
+        if(PureInputValue.length === 0) return ;
         for(let i in rowTitles){
             if(rowTitles[i].RowName === CurrentTitle){
-                let RowTitlesClone = rowTitles;
-                let OneElementRowTitlesClone = RowTitlesClone[i];
-                OneElementRowTitlesClone.Cards.push(InputValue);
-                RowTitlesClone[i] = OneElementRowTitlesClone;
-                setRowTitles(RowTitlesClone);
-                
+                let cloneRowTitles = rowTitles;
+                let newCardObjectData = {
+                    CardName: InputValue,
+                    CardDescription: 'Add a more detailed description...',
+                    CardComments: [],
+                };
+                cloneRowTitles[i].Cards.push(newCardObjectData);
+                setRowTitles(cloneRowTitles);    
             }
         }
         setRowTitles(rowTitles.concat([]));
@@ -153,27 +204,25 @@ const TrelelloCardField:React.FC<any> = (props) =>{
         })
         setRowTitles(cloneRowTitles.concat([]));
         
-        return;
     }
     function deleteRowFunction(neededTitle:string){
         let cloneRowTitles = rowTitles;
         for(let i in cloneRowTitles){
             if(cloneRowTitles[i].RowName === neededTitle){
                 cloneRowTitles.splice(parseInt(i), 1);
+                break;
             }
         }
         setRowTitles(cloneRowTitles.concat([]));
-        
     }
     
     
     return(
         <Wrapper>
-            
-            {rowTitles.map(title=>{ return <Row deleteRowFunction={deleteRowFunction} getEditedTitle={setEditedRowTitle} getClickedCardTitle={props.getClickedCardTitle}  addingCardFunction={addingUsersCardFunction} cardData={title.Cards} title={title.RowName}/>})}
+            {rowTitles.map(title=>{ return <Row key={rowTitles.indexOf(title, 0)} deleteRowFunction={deleteRowFunction} getEditedTitle={setEditedRowTitle} getClickedCardTitle={props.getClickedCardTitle}  addingCardFunction={addingUsersCardFunction} cardData={title.Cards} title={title.RowName}/>})}
             {addAnotherRowFlag === false ? <AddAnotherRow onClick={AddAnotherRowFunction}>Add another list</AddAnotherRow> 
             : <AddAnotherRowWrapper>
-                <AddAnotherRowWrapperInput placeholder="Enter list title" ref={AddAnotherRowInput}></AddAnotherRowWrapperInput>
+                <AddAnotherRowWrapperInput  placeholder="Enter list title" ref={AddAnotherRowInput}></AddAnotherRowWrapperInput>
                 <AddAnotherRowWrapperAddButton onClick={addAnotherRowWrapperAddButtonFunc}>Add list</AddAnotherRowWrapperAddButton>
                 <AddAnotherRowWrapperCancelButton onClick={AddAnotherRowCancelButtonFunc}>
                     <AddAnotherRowWrapperCancelButtonImg src={Xicon}></AddAnotherRowWrapperCancelButtonImg>

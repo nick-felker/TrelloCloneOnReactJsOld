@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 //StyledBlock
 const CardModalWindowWrapper = styled.div`
@@ -66,17 +66,27 @@ const ModalTitleWrapper = styled.div`
     min-width: 200px;
     margin: 20px 0px 0px 20px;
 `
+const ModalTitleInput = styled.input`
+    
+`
 const ModalTitle = styled.p`
     font-size: 25px;
     color: #223556;
     font-weight: 500;
     padding: 20px 0px 10px 20p;
     word-break: break-all;
+    cursor: pointer;
 `
 const ListOwner = styled.p`
     font-size: 20px;
     color: #223556;
     padding-left: 20px;
+`
+const CurrentRowWrapper = styled.div`
+    margin-left: 20px;
+`
+const CurrentRowTitle = styled.p`
+    font-size: 20px;
 `
 const DescriptionWrapper = styled.div`
     margin: 20px 0px 0px 20px;
@@ -114,7 +124,7 @@ const CommentsWrapper = styled.div`
 const CommentsWrapperTitle = styled.p`
     font-size: 20px;
 `
-const CommentsInputField = styled.input`
+const CommentsInputFieldBlock = styled.input`
     position: relative;
     width: 100%;
     height: 50px;
@@ -147,6 +157,20 @@ const CommentOwner = styled.p`
 `
 const NewComment = styled.p`
     font-size: 20px;
+    cursor: pointer;
+    :hover{
+        opacity: 0.6;
+        transition: 0.6;
+    }
+    color: black;
+    word-break: break-all;
+    margin: 15px 0px;
+    padding: 10px 0px 10px 20px;
+    border-radius: 7px;
+    background-color: #eaecf0; 
+`
+const NewCommentInput = styled.input`
+    font-size: 20px;
     color: black;
     margin: 15px 0px;
     padding: 10px 0px 10px 20px;
@@ -156,38 +180,106 @@ const NewComment = styled.p`
 const ModalWindowCloseButtonPlusTitleWrapper = styled.div`
     display: flex;
 `
+const DeleteCommentButton = styled.button`
+    position: relative;
+    margin-left: 90%;
+    border: none;
+    background-color: white;
+    border-radius: 4px;
+    cursor: pointer;
+    padding: 5px 10px;
+    :hover{
+        opacity: 0.6;
+        transition: 0.6s;
+    }
+`
+const SaveEditedCardTitle = styled.button`
+    font-size: 18px;
+    outline: none;
+    border: none;
+    margin-left: 30px;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+`
 const ModalWindowTitleWrapper = styled.div``
 const ModalWindowCloseButton = styled.div``
 const Wrapper = styled.div``
+
+
 const CardModalWindow:React.FC<any> = (props) =>{
+    let [editCardTitleFlag, setEditCardTitleFlag] = useState<boolean>(false);
     let [editDescriptionFlag, setEditDescriptionFlag] = useState<boolean>(false);
-    let [descriptionContain, setDescriptionContain] = useState<string>('Add a more detailed description...');
-    function saveNewDescription(e:any){
-        if(e.key === 'Enter'){
-            let descriptionInputValue = DescriptionInputFieldValue.current?.value + '';
-            setDescriptionContain(descriptionInputValue);
-            setEditDescriptionFlag(false);
-        }
-        
-    }
+    
+    
     let [commentsList, setCommentsList] = useState<any[]>([]);
-    let DescriptionInputFieldValue = React.useRef<HTMLInputElement>(null);
-    let CommentsInputFieldValue = React.useRef<HTMLInputElement>(null);
-    function AddNewCommentFunction(){
-    let comment = [CommentsInputFieldValue.current?.value];
-    if(CommentsInputFieldValue.current?.value === '') return;
-    setCommentsList(commentsList.concat(comment));
+    let [descriptionContain, setDescriptionContain] = useState<string>('Add a more detailed description...')
+    let editCardTitleInputField = React.useRef<HTMLInputElement>(null);
+    let descriptionInputField = React.useRef<HTMLInputElement>(null);
     
+    let CommentsInputField = React.useRef<HTMLInputElement>(null);
+
     
+    useEffect(()=>{
+        let cloneRowTitles = props.rowTitlesArray;
+        for(let i in cloneRowTitles){
+            for(let j in cloneRowTitles[i].Cards){
+                if(cloneRowTitles[i].Cards[j].CardName === props.modalWindowTitle){
+                    setCommentsList(cloneRowTitles[i].Cards[j].CardComments);
+                    setDescriptionContain(props.rowTitlesArray[i].Cards[j].CardDescription)
+                    break;
+                }
+            }
+        }
+    }, [props.rowTitlesArray])
+    
+
+    function saveNewDescription(e:any){
+        let pureValue = editCardTitleInputField.current?.value.trim();
+        
+        if(e.key === 'Enter'){
+            if(pureValue?.length === 0) return;
+            setDescriptionContain(descriptionInputField.current?.value + '');
+            props.getDescriptionContainFromModalWindow(descriptionInputField.current?.value);
+            setEditDescriptionFlag(false);
+        } 
     }
+  
+    let deleteComment = (comment:string) =>{
+        props.takeDeleteCommentName(comment);
+        
+       
+    }
+
+    function AddNewCommentFunction(){
+        let pureValue = CommentsInputField.current?.value.trim();
+        if(pureValue?.length === 0) return;
+            commentsList.push(CommentsInputField.current?.value + '');
+            setCommentsList(commentsList);
+            props.getCommentsList(commentsList.concat([]));
+    }
+    function saveEditedCardTitle(){
+        let PureValue = editCardTitleInputField.current?.value.trim();
+        if(PureValue?.length === 0) return; 
+        setEditCardTitleFlag(false);
+        props.getEditedCardTitle(editCardTitleInputField.current?.value + '');
+       
+     
+    }
+
+
     return(
-        <Wrapper>  
+        <Wrapper>
             <WindowOverlay>
                 <CardModalWindowWrapper>
                     <ModalWindowCloseButtonPlusTitleWrapper>
                         <ModalWindowTitleWrapper>
-                            <ModalTitleWrapper><ModalTitle>{props.modalWindowTitle}</ModalTitle></ModalTitleWrapper>
+                            {editCardTitleFlag === false ? <ModalTitleWrapper><ModalTitle onClick={()=>{setEditCardTitleFlag(true)}}>{props.modalWindowTitle}</ModalTitle></ModalTitleWrapper> : <ModalTitleWrapper><ModalTitleInput ref={editCardTitleInputField} ></ModalTitleInput><SaveEditedCardTitle onClick={saveEditedCardTitle}>Save</SaveEditedCardTitle></ModalTitleWrapper> }
+                            
                             <ListOwner>In list <u>{localStorage.getItem('TrelelloUserName')}</u></ListOwner>
+                            <CurrentRowWrapper>
+                                <CurrentRowTitle>In row <u>{props.modalWindowTitle}</u></CurrentRowTitle>
+                            </CurrentRowWrapper>
                         </ModalWindowTitleWrapper>
                         <ModalWindowCloseButton>
                             <HideCardModalWindow onClick={()=>props.hideCardModalWindow(false)}>Close</HideCardModalWindow>
@@ -198,20 +290,23 @@ const CardModalWindow:React.FC<any> = (props) =>{
                     
                     <DescriptionWrapper>
                         <DescriptionWrapperTitle>Description</DescriptionWrapperTitle>
-                        {editDescriptionFlag === false ? <DescriptionWrapperText onClick={()=>setEditDescriptionFlag(true)}>{descriptionContain}</DescriptionWrapperText> : <DescriptionWrapperTextInput ref={DescriptionInputFieldValue} onKeyDown={saveNewDescription}></DescriptionWrapperTextInput>}
+                        {editDescriptionFlag === false ? 
+                        <DescriptionWrapperText onClick={()=>setEditDescriptionFlag(true)}>{descriptionContain}</DescriptionWrapperText> : <DescriptionWrapperTextInput ref={descriptionInputField} onKeyDown={saveNewDescription}></DescriptionWrapperTextInput>}
                     </DescriptionWrapper>
                     <CommentsWrapper>
                         <CommentsWrapperTitle>Comments</CommentsWrapperTitle>
-                        <CommentsInputField ref={CommentsInputFieldValue}></CommentsInputField>
-                        <CommentsAddComment onClick={AddNewCommentFunction}>Add a comment</CommentsAddComment>
+                        <CommentsInputFieldBlock ref={CommentsInputField}></CommentsInputFieldBlock>
+                        <CommentsAddComment onClick={AddNewCommentFunction} onKeyDown={(e:any)=>{if(e.key === 'Enter') AddNewCommentFunction()}}>Add a comment</CommentsAddComment>
                         
                         {commentsList.map(comment=>{
-                            return(<>
+                            return(<> 
                                     <CommentOwner>{localStorage.getItem('TrelelloUserName')}</CommentOwner>
-                                    <NewComment>{comment}</NewComment>
-                            </>) })}
+                                    <NewComment key={commentsList.indexOf(comment, 0)}>{comment} <DeleteCommentButton key={commentsList.indexOf(comment, 0)} onClick={()=>deleteComment(comment)}>Del</DeleteCommentButton></NewComment>
+                                    
+                            </>)
+                         })}
+                         
                     </CommentsWrapper>
-                    
                 </CardModalWindowWrapper>
                     <BlackLayer onClick={()=>{props.hideCardModalWindow(false)}}></BlackLayer>
             </WindowOverlay>
