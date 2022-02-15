@@ -1,19 +1,19 @@
 import React from 'react';
-import TrelelloApp from './TrelelloWorkingWindow/TrelelloApp/TrelelloApp';
-import AskingNameModalWindow from './AskingNameModalWindow/AskingNameModalWindow';
-import './App.css';
+import TrelelloApp from './components/TrelelloWorkingWindow/TrelelloApp/TrelelloApp';
+import AskingNameModalWindow from './components/AskingNameModalWindow/AskingNameModalWindow';
+import './Styles/App.css'
 import { useState } from 'react';
 
 function App() {
-  let [UserNameInLocalStorage, SetUserNameInLocalStorage] = useState();
-  let ReadingUserNameFunction = (value:any) =>{
+  let [_, SetUserNameInLocalStorage] = useState<string>();
+  function readingUserNameFunction(value:string){
       SetUserNameInLocalStorage(value);
   }
   
   return Boolean(localStorage.getItem("TrelelloUserName")) ? (<TrelelloApp /> ) : 
     (
       <AskingNameModalWindow
-        ReadingUserNameFunction={ReadingUserNameFunction}
+        ReadingUserNameFunction={readingUserNameFunction}
       ></AskingNameModalWindow>
     );
 }

@@ -1,7 +1,68 @@
-import React from "react";
+import React, { KeyboardEventHandler } from "react";
 import styled from "styled-components";
 import { useState } from "react";
-import Xicon from '../../Images/X.png';
+import Xicon from '../../../Images/X.png';
+
+type Props = {
+    key: string;
+    deleteRowFunction: Function;
+    getEditedTitle: Function;
+    getClickedCardTitle: Function;
+    addingCardFunction: Function;
+    cardData: any[];
+    title: string;
+
+}
+
+const Row = (props: Props) =>{
+    /*let [UserCardData, setNewCard] = useState(['']);*/
+    let [showAddingMenuFlag, setShowAddingMenuFlag] = useState(true);
+    let [editRowTitleFlag, setEditRowTitleFlag] = useState(false);
+    let cardTitleInputField = React.useRef<HTMLInputElement>(null);
+    let newCardInputField = React.useRef<HTMLTextAreaElement>(null);
+    let AddingAdditionalMenuField = (props:any) =>{
+        return(
+            <AdditionalMenu>
+                <AdditionalMenuInput ref={newCardInputField}/>
+                <AdditionalMenuUnderLine>
+                    <AdditionalMenuUnderLineAddButton  onClick={()=>{props.props.addingCardFunction(newCardInputField.current?.value, props.props.title)}}> Add card</AdditionalMenuUnderLineAddButton>
+                    <AdditionalMenuUnderLineDeleteButton onClick={()=>{setShowAddingMenuFlag(true)}}>
+                        <AdditionalMenuUnderLineDeleteButtonImg src={Xicon}></AdditionalMenuUnderLineDeleteButtonImg>
+                    </AdditionalMenuUnderLineDeleteButton>
+                </AdditionalMenuUnderLine>
+            </AdditionalMenu>
+        )
+    }
+
+    function handleKeyPress(e:any){
+      if(e.key === 'Enter'){
+        if(cardTitleInputField.current?.value === undefined) return;
+        setEditRowTitleFlag(false);
+        let pureValue = cardTitleInputField.current?.value.trim();
+        if (pureValue === '') return;
+        props.getEditedTitle(pureValue, props.title)
+      } 
+    }
+   
+    return(
+        <>
+        
+            <Wrapper>
+                <TitleWrapper>
+                {editRowTitleFlag === false ? <CardTitle onClick={()=>{setEditRowTitleFlag(true)}} >{props.title}</CardTitle> : <CardTitleInput  ref={cardTitleInputField} onKeyDown={handleKeyPress} placeholder={props.title}></CardTitleInput>}
+                <DeleteRowButton onClick={()=>{props.deleteRowFunction(props.title)}}><DeleteRowButtonImage src={Xicon}></DeleteRowButtonImage></DeleteRowButton>
+                </TitleWrapper>
+                {props.cardData.map((elem:any)=>{return <Card key={props.cardData.indexOf(elem, 0)} onClick={()=>props.getClickedCardTitle(elem.CardName, true, props.title)}>{elem.CardName}</Card>})}
+                
+            
+                
+                {showAddingMenuFlag === true ? <AddCardButton onClick={()=>{setShowAddingMenuFlag(false)}}>Add a card</AddCardButton> : <AddingAdditionalMenuField props={props}></AddingAdditionalMenuField>}
+                
+            </Wrapper>
+            
+        </>
+    )
+}
 
 const Wrapper = styled.div`
     background-color: #ebecf0;
@@ -150,58 +211,5 @@ const DeleteRowButtonImage = styled.img`
     opacity: 0.4;
     height: 20px;
 `
-
-const Row = (props:any) =>{
-    /*let [UserCardData, setNewCard] = useState(['']);*/
-    let [showAddingMenu, setFlag] = useState(true);
-    let [editRowTitleFlag, setEditRowTitleFlag] = useState(false);
-    let CardTitleInputValue = React.useRef<HTMLInputElement>(null);
-    let NewCardInputValue = React.useRef<HTMLTextAreaElement>(null);
-    let AddingAdditionalMenuField = (props:any) =>{
-        return(
-            <AdditionalMenu>
-                <AdditionalMenuInput ref={NewCardInputValue}/>
-                <AdditionalMenuUnderLine>
-                    <AdditionalMenuUnderLineAddButton  onClick={()=>{props.props.addingCardFunction(NewCardInputValue.current?.value, props.props.title)}}> Add card</AdditionalMenuUnderLineAddButton>
-                    <AdditionalMenuUnderLineDeleteButton onClick={HidingAdditionalRowMenu}>
-                        <AdditionalMenuUnderLineDeleteButtonImg src={Xicon}></AdditionalMenuUnderLineDeleteButtonImg>
-                    </AdditionalMenuUnderLineDeleteButton>
-                </AdditionalMenuUnderLine>
-            </AdditionalMenu>
-        )
-    }
-    
-    const ShowingAdditionalRowMenu = () => setFlag(false);
-
-    const HidingAdditionalRowMenu = () => setFlag(true);
-    
-    function handleKeyPress(e:any){
-      if(e.key === 'Enter'){
-        setEditRowTitleFlag(false);
-        let newTitle = CardTitleInputValue.current?.value;
-        if (newTitle === '') return;
-        props.getEditedTitle(newTitle, props.title)
-      } 
-    }
-   
-    return(
-        <>
-        
-            <Wrapper>
-                <TitleWrapper>
-                {editRowTitleFlag === false ? <CardTitle onClick={()=>{setEditRowTitleFlag(true)}} >{props.title}</CardTitle> : <CardTitleInput  ref={CardTitleInputValue} onKeyDown={handleKeyPress} placeholder={props.title}></CardTitleInput>}
-                <DeleteRowButton onClick={()=>{props.deleteRowFunction(props.title)}}><DeleteRowButtonImage src={Xicon}></DeleteRowButtonImage></DeleteRowButton>
-                </TitleWrapper>
-                {props.cardData.map((elem:any)=>{return <Card key={props.cardData.indexOf(elem, 0)} onClick={()=>props.getClickedCardTitle(elem.CardName, true)}>{elem.CardName}</Card>})}
-                
-            
-                
-                {showAddingMenu === true ? <AddCardButton onClick={ShowingAdditionalRowMenu}>Add a card</AddCardButton> : <AddingAdditionalMenuField props={props}></AddingAdditionalMenuField>}
-                
-            </Wrapper>
-            
-        </>
-    )
-}
 
 export default Row;

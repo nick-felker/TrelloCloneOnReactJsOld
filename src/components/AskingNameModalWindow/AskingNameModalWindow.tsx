@@ -1,6 +1,34 @@
 import React from "react";
-/*import { useState } from "react";*/
 import styled from "styled-components";
+
+type Props = {
+    ReadingUserNameFunction: Function;
+}
+
+const AskingNameModalWindow = (props: Props) =>{
+    let inputField = React.useRef<HTMLInputElement>(null);
+    const onSubmit = () => {
+        if(inputField === undefined) return;
+        const inputValue = inputField.current?.value + '';
+        let purValue = inputField.current?.value.trim();
+        if(purValue?.length !== 0){
+            alert('Put name');
+            return;
+        }
+        localStorage.setItem('TrelelloUserName', inputValue);
+        props.ReadingUserNameFunction(inputValue);
+    }
+    return(
+        <>
+            <Wrapper>
+                <Input placeholder="Put your name here" ref={inputField}></Input>
+                <Button onClick={onSubmit}>Submit</Button>
+            </Wrapper>
+           
+        </>
+    )
+}
+
 const Wrapper = styled.div`
     background-color: white;
     width: 100%;
@@ -48,25 +76,4 @@ const Button = styled.button`
     border-radius: 5px;
 `
 
-const AskingNameModalWindow:React.FC<any> = (props) =>{
-    let InputField = React.useRef<HTMLInputElement>(null);
-    const onSubmit = () => {
-        const InputValue = InputField.current?.value + '';
-        if(InputValue === ''){
-            alert('Put name');
-            return;
-        }
-        localStorage.setItem('TrelelloUserName', InputValue);
-        props.ReadingUserNameFunction(InputValue);
-    }
-    return(
-        <>
-            <Wrapper>
-                <Input placeholder="Put your name here" ref={InputField}></Input>
-                <Button onClick={onSubmit}>Submit</Button>
-            </Wrapper>
-           
-        </>
-    )
-}
 export default AskingNameModalWindow;
