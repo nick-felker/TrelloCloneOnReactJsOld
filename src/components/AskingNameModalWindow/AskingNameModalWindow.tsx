@@ -11,7 +11,7 @@ const AskingNameModalWindow = (props: Props) =>{
         if(inputField === undefined) return;
         const inputValue = inputField.current?.value + '';
         let purValue = inputField.current?.value.trim();
-        if(purValue?.length !== 0){
+        if(purValue?.length === 0){
             alert('Put name');
             return;
         }
