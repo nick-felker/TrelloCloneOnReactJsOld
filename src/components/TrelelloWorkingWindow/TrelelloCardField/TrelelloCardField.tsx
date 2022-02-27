@@ -5,6 +5,7 @@ import Row from "../Row/Row";
 import Xicon from '../../../Images/X.png';
 import { MainAppRowArray } from "../../../types";
 
+
 type Props = {
     setCardModalWindowTitleFunction: Function;
     takeRenameCardTitle: string;

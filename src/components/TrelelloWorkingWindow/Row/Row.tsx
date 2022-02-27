@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { useState } from "react";
 import Xicon from '../../../Images/X.png';
 
+
 type Props = {
     key: string;
     deleteRowFunction: Function;
@@ -11,7 +12,6 @@ type Props = {
     addingCardFunction: Function;
     cardData: any[];
     title: string;
-
 }
 
 const Row = (props: Props) =>{
@@ -98,6 +98,7 @@ const CardTitleInput = styled.input`
     cursor: pointer;
     background-color: white ;
 `
+
 const AddCardButton = styled.button`
     font-size: 19px;
     border: none;

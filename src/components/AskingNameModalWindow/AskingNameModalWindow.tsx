@@ -1,30 +1,48 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
-
+import {Form, Field} from 'react-final-form';
+import { format } from "path/posix";
 type Props = {
     ReadingUserNameFunction: Function;
 }
 
+
 const AskingNameModalWindow = (props: Props) =>{
-    let inputField = React.useRef<HTMLInputElement>(null);
-    const onSubmit = () => {
-        if(inputField === undefined) return;
-        const inputValue = inputField.current?.value + '';
-        let purValue = inputField.current?.value.trim();
-        if(purValue?.length !== 0){
+
+    const onSubmit = (inputField:any) => {
+        if(inputField.UserName === undefined) return;
+        let purValue = inputField.UserName.trim();  
+        if(purValue?.length === 0){
             alert('Put name');
             return;
         }
-        localStorage.setItem('TrelelloUserName', inputValue);
-        props.ReadingUserNameFunction(inputValue);
+        localStorage.setItem('TrelelloUserName', inputField.UserName);
+        props.ReadingUserNameFunction(inputField.UserName);
     }
     return(
         <>
-            <Wrapper>
-                <Input placeholder="Put your name here" ref={inputField}></Input>
-                <Button onClick={onSubmit}>Submit</Button>
-            </Wrapper>
-           
+            
+            <Form 
+                onSubmit={onSubmit} 
+                render={ ( {handleSubmit, values, pristine, submitting} ) => (    
+                    <form onSubmit={handleSubmit}>
+                        <Wrapper>
+                            <Field
+                            name="UserName"
+                            >
+                                {({input}) =>(
+                                <Input {...input} type='text' placeholder="Put your name here">
+                                </Input>
+                                )} 
+                            </Field>
+                            <Button type="submit" onClick={handleSubmit}  disabled={submitting || pristine}>
+                                Submit
+                            </Button>
+                        </Wrapper>
+                        
+                    </form>
+                )}>  
+            </Form>
         </>
     )
 }
@@ -38,11 +56,12 @@ const Wrapper = styled.div`
     align-items: center;
     justify-content: center;
     margin-top: 10%;
-    
 `
+
 const Input = styled.input`
     padding: 20px 0px;
     outline: none;
+    
     font-size: 20px;
     width: 320px;
     text-align: center;
