@@ -3,8 +3,11 @@ import TrelelloApp from './components/TrelelloWorkingWindow/TrelelloApp/Trelello
 import AskingNameModalWindow from './components/AskingNameModalWindow/AskingNameModalWindow';
 import './Styles/App.css'
 import { useState } from 'react';
+import { useSelector } from 'react-redux';
 
 function App() {
+  const state = useSelector(state=>state);
+  console.log(state);
   let [_, SetUserNameInLocalStorage] = useState<string>();
   function readingUserNameFunction(value:string){
       SetUserNameInLocalStorage(value);
