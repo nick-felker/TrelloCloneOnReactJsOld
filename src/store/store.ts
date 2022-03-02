@@ -1,36 +1,22 @@
-import { configureStore } from "@reduxjs/toolkit"
-import { configure } from "@testing-library/react"
-import { createStore } from "redux"
-const ConfigureStore = [
-    {RowName: 'ToDo'},
-        {Cards: {
-        CardName: 'fsdfs',
-        CardDescription: 'fsdfs',
-        CardComments: ['dafs', 'ffsfs', 'fsdfsfs'],
-        }
+import {configureStore} from '@reduxjs/toolkit';
+import addingUserName from './reducers/addUserName';
+import mainAppFunctional from './reducers/mainAppFunctional';
+
+export const store = configureStore({
+    reducer: {
+        addingUserName,
+        mainAppFunctional,
     },
-    {RowName: 'In Progress'},
-        {Cards: {
-        CardName: 'fsdfs',
-        CardDescription: 'fsdfs',
-        CardComments: ['dafs', 'ffsfs', 'fsdfsfs'],
-        }
-    },
-    {RowName: 'Testing'},
-        {Cards: {
-        CardName: 'fsdfs',
-        CardDescription: 'fsdfs',
-        CardComments: ['dafs', 'ffsfs', 'fsdfsfs'],
-        }
-    },
-    {RowName: 'Done'},
-        {Cards: {
-        CardName: 'fsdfs',
-        CardDescription: 'fsdfs',
-        CardComments: ['dafs', 'ffsfs', 'fsdfsfs'],
-        }
-    },
-]
+});
 
 
-export default configureStore
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;
+
+
+
+
+/*import { createSlice } from "@reduxjs/toolkit";
+import { MainAppRowArray } from '../../types'
+
+*/

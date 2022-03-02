@@ -1,9 +1,14 @@
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import styled from "styled-components";
+import { useDispatch, useSelector } from "react-redux";
+import { addComment, setDescription, setRenameCard} from "../../store/reducers/mainAppFunctional";
+import { RootState } from "../../store/store";
 
 
 const CardModalWindow:React.FC<any> = (props) =>{
+    const dispatch = useDispatch();
+    
     let [editCardTitleFlag, setEditCardTitleFlag] = useState<boolean>(false);
     let [editDescriptionFlag, setEditDescriptionFlag] = useState<boolean>(false);
     let [commentsList, setCommentsList] = useState<any[]>([]);
@@ -28,11 +33,10 @@ const CardModalWindow:React.FC<any> = (props) =>{
     
 
     function saveNewDescription(e:any){
-        let pureValue = editCardTitleInputField.current?.value.trim();
         if(e.key === 'Enter'){
+            let pureValue = descriptionInputField.current?.value.trim();
             if(pureValue?.length === 0) return;
-            setDescriptionContain(descriptionInputField.current?.value + '');
-            props.getDescriptionContainFromModalWindow(descriptionInputField.current?.value);
+            dispatch(setDescription([props.modalWindowTitle, pureValue]))
             setEditDescriptionFlag(false);
         } 
     }
@@ -40,17 +44,14 @@ const CardModalWindow:React.FC<any> = (props) =>{
     function AddNewCommentFunction(){
         let pureValue = commentsInputField.current?.value.trim();
         if(pureValue?.length === 0) return;
-            commentsList.push(commentsInputField.current?.value + '');
-            setCommentsList(commentsList);
-            props.getCommentsList(commentsList.concat([]));
+            dispatch(addComment([props.modalWindowTitle, pureValue]))
+            
     }
     function saveEditedCardTitle(){
         let pureValue = editCardTitleInputField.current?.value.trim();
         if(pureValue?.length === 0) return; 
+        dispatch(setRenameCard([props.modalWindowTitle, pureValue]));
         setEditCardTitleFlag(false);
-        props.getEditedCardTitle(editCardTitleInputField.current?.value + '');
-       
-     
     }
 
 
@@ -72,8 +73,6 @@ const CardModalWindow:React.FC<any> = (props) =>{
                             <DeleteCardButton onClick={()=>{props.activateDeleteCardButton(true)}}>Delete</DeleteCardButton>
                         </ModalWindowCloseButton>
                     </ModalWindowCloseButtonPlusTitleWrapper>
-                    
-                    
                     <DescriptionWrapper>
                         <DescriptionWrapperTitle>Description</DescriptionWrapperTitle>
                         {editDescriptionFlag === false ? 
@@ -82,7 +81,7 @@ const CardModalWindow:React.FC<any> = (props) =>{
                     <CommentsWrapper>
                         <CommentsWrapperTitle>Comments</CommentsWrapperTitle>
                         <CommentsInputFieldBlock ref={commentsInputField}></CommentsInputFieldBlock>
-                        <CommentsAddComment onClick={AddNewCommentFunction} onKeyDown={(e:any)=>{if(e.key === 'Enter') AddNewCommentFunction()}}>Add a comment</CommentsAddComment>
+                        <CommentsAddComment onClick={AddNewCommentFunction}>Add a comment</CommentsAddComment>
                         
                         {commentsList.map((comment, index)=>{
                             return(<> 

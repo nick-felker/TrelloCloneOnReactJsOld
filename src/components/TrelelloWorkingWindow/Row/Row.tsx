@@ -1,20 +1,23 @@
-import React, { KeyboardEventHandler } from "react";
+import React from "react";
 import styled from "styled-components";
 import { useState } from "react";
+import {useSelector, useDispatch} from 'react-redux';
+
 import Xicon from '../../../Images/X.png';
+import {deleteCurrentColumn, setRenameColumn } from '../../../store/reducers/mainAppFunctional';
 
 
 type Props = {
     key: string;
-    deleteRowFunction: Function;
-    getEditedTitle: Function;
     getClickedCardTitle: Function;
     addingCardFunction: Function;
     cardData: any[];
     title: string;
+
 }
 
 const Row = (props: Props) =>{
+    const dispatch = useDispatch();
     /*let [UserCardData, setNewCard] = useState(['']);*/
     let [showAddingMenuFlag, setShowAddingMenuFlag] = useState(true);
     let [editRowTitleFlag, setEditRowTitleFlag] = useState(false);
@@ -33,15 +36,17 @@ const Row = (props: Props) =>{
             </AdditionalMenu>
         )
     }
-
-    function handleKeyPress(e:any){
-      if(e.key === 'Enter'){
-        if(cardTitleInputField.current?.value === undefined) return;
-        setEditRowTitleFlag(false);
-        let pureValue = cardTitleInputField.current?.value.trim();
-        if (pureValue === '') return;
-        props.getEditedTitle(pureValue, props.title)
-      } 
+    function deleteColumn(neededTitle:string){
+        dispatch(deleteCurrentColumn(neededTitle));
+    }
+    function renameColumn(e:any){
+        if(e.key === 'Enter'){
+            let pureValue = cardTitleInputField.current?.value;
+            if(pureValue === '' || pureValue === undefined) return;
+            setEditRowTitleFlag(false);
+            dispatch(setRenameColumn([props.title, pureValue]))
+            
+        } 
     }
    
     return(
@@ -49,8 +54,8 @@ const Row = (props: Props) =>{
         
             <Wrapper>
                 <TitleWrapper>
-                {editRowTitleFlag === false ? <CardTitle onClick={()=>{setEditRowTitleFlag(true)}} >{props.title}</CardTitle> : <CardTitleInput  ref={cardTitleInputField} onKeyDown={handleKeyPress} placeholder={props.title}></CardTitleInput>}
-                <DeleteRowButton onClick={()=>{props.deleteRowFunction(props.title)}}><DeleteRowButtonImage src={Xicon}></DeleteRowButtonImage></DeleteRowButton>
+                {editRowTitleFlag === false ? <CardTitle onClick={()=>{setEditRowTitleFlag(true)}} >{props.title}</CardTitle> : <CardTitleInput  ref={cardTitleInputField} onKeyDown={renameColumn} placeholder={props.title}></CardTitleInput>}
+                <DeleteRowButton onClick={()=>{deleteColumn(props.title)}}><DeleteRowButtonImage src={Xicon}></DeleteRowButtonImage></DeleteRowButton>
                 </TitleWrapper>
                 {props.cardData.map((elem:any)=>{return <Card key={props.cardData.indexOf(elem, 0)} onClick={()=>props.getClickedCardTitle(elem.CardName, true, props.title)}>{elem.CardName}</Card>})}
                 
@@ -98,7 +103,6 @@ const CardTitleInput = styled.input`
     cursor: pointer;
     background-color: white ;
 `
-
 const AddCardButton = styled.button`
     font-size: 19px;
     border: none;

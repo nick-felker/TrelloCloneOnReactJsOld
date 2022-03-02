@@ -1,10 +1,12 @@
 import React from "react";
 import styled from "styled-components";
 import { useState, useEffect } from "react";
+import {useSelector, useDispatch} from 'react-redux';
+import {addNewColumn, takeNewAppDataArrayFromLocalStorage, addCard, deleteCard, deleteComment} from '../../../store/reducers/mainAppFunctional';
 import Row from "../Row/Row";
 import Xicon from '../../../Images/X.png';
 import { MainAppRowArray } from "../../../types";
-
+import {RootState} from '../../../store/store';
 
 type Props = {
     setCardModalWindowTitleFunction: Function;
@@ -20,12 +22,15 @@ type Props = {
 }
 
 const TrelelloCardField = (props:Props) =>{
+    const appDataArray = useSelector((state: RootState) => state.mainAppFunctional.appDataArray);
+    const dispatch = useDispatch();
+    console.log(appDataArray)
     /*let [RowTitles, setRowTitles] = useState(['Todo','In Progress', 'Testing', 'Done']);*/
     let [rowTitles, setRowTitles] = useState<MainAppRowArray[]>([{RowName : 'ToDo', Cards: []}, {RowName : 'In Progress', Cards: []}, {RowName : 'Testing', Cards: []}, {RowName : 'Done', Cards: []}, ]);
     let [addAnotherRowFlag, setAddAnotherRowFlag] = useState(false);
     let addAnotherRowInput = React.useRef<HTMLInputElement>(null);
     useEffect(()=>{
-        let cloneRowTitles = [...rowTitles];
+        let cloneRowTitles = [...appDataArray];
         for(let i in cloneRowTitles){
             for(let j in cloneRowTitles[i].Cards){
                 if(cloneRowTitles[i].Cards[j].CardName === props.activateDeleteCardButtonTitle){
@@ -37,27 +42,20 @@ const TrelelloCardField = (props:Props) =>{
         }
     }, [props.takeDescriptionContainFromTrelelloApp])
     useEffect(()=>{
-        let cloneRowTitles = [...rowTitles];
-        for(let i in cloneRowTitles){
-            for(let j in cloneRowTitles[i].Cards){
-                if(cloneRowTitles[i].Cards[j].CardName === props.activateDeleteCardButtonTitle){
-                    cloneRowTitles[i].Cards[j].CardName = props.takeRenameCardTitle;
-                    setRowTitles(cloneRowTitles.concat([]))
-                    props.setCardModalWindowTitleFunction(props.takeRenameCardTitle);
-                    break;
-                }
-            }
-        }
-    }, [props.takeRenameCardTitle])
+        setRowTitles(appDataArray)
+    }, [appDataArray])
+    
     useEffect(()=>{
         let cloneRowTitles = localStorage.getItem('RowTitles');
-        cloneRowTitles != null ? setRowTitles(JSON.parse(cloneRowTitles)) : setRowTitles(rowTitles);
+        if (cloneRowTitles !== null){
+            dispatch(takeNewAppDataArrayFromLocalStorage(JSON.parse(cloneRowTitles)))
+        }
     }, [])
     
    
 
     useEffect(()=>{
-        let cloneRowTitles = [...rowTitles];
+        let cloneRowTitles = [...appDataArray];
         for(let i in cloneRowTitles){
             for(let j in cloneRowTitles[i].Cards){
                 if(cloneRowTitles[i].Cards[j].CardName === props.activateDeleteCardButtonTitle){
@@ -69,21 +67,20 @@ const TrelelloCardField = (props:Props) =>{
         }
     }, [props.commentsList]) 
     useEffect(()=>{
-        localStorage.setItem('RowTitles', JSON.stringify(rowTitles));
-        props.rowTitlesArrayToTrelelloApp(rowTitles);
-    }, [rowTitles])
+        localStorage.setItem('RowTitles', JSON.stringify(appDataArray));
+        props.rowTitlesArrayToTrelelloApp(appDataArray);
+    }, [appDataArray])
     
     useEffect(()=>{
         
         if(props.takeDeleteCommentName === undefined) return;
-        let cloneRowTitles = [...rowTitles];
+        let cloneRowTitles = [...appDataArray];
         for(let i in cloneRowTitles){
             for(let j in cloneRowTitles[i].Cards){
                 for(let y in cloneRowTitles[i].Cards[j].CardComments){
                     if(cloneRowTitles[i].Cards[j].CardComments[y] === props.takeDeleteCommentName){
-                        cloneRowTitles[i].Cards[j].CardComments.splice(Number(y), 1);
-                        setRowTitles(cloneRowTitles.concat([]))
-                        break;
+                        dispatch(deleteComment([i, j, y]))
+                        break;  
                     }
                 }
             }
@@ -91,16 +88,14 @@ const TrelelloCardField = (props:Props) =>{
     }, [props.takeDeleteCommentName])
 
     useEffect(()=>{
-        for(let i in rowTitles){
-            for(let j in rowTitles[i].Cards){
-                 if(rowTitles[i].Cards[j].CardName === props.activateDeleteCardButtonTitle){
-                      rowTitles[i].Cards  = Array.prototype.slice.call(rowTitles[i].Cards); // Array
-                      rowTitles[i].Cards.splice(Number(j), 1);
-                      break;
+        for(let i in appDataArray){
+            for(let j in appDataArray[i].Cards){
+                 if(appDataArray[i].Cards[j].CardName === props.activateDeleteCardButtonTitle){
+                    dispatch(deleteCard([i, j]))
+                    break;
                  }
             }
         } 
-        localStorage.setItem('RowTitles', JSON.stringify(rowTitles));
         props.changeActivateDeleteButtonFlag(false);
         
 }, [props.activateDeleteCardButtonFlag])
@@ -109,55 +104,27 @@ const TrelelloCardField = (props:Props) =>{
         let pureValue = addAnotherRowInput.current?.value.trim();
         if(pureValue === undefined) return;
         if(pureValue?.length === 0 ) return;
-        let RowObject: MainAppRowArray = {
-            RowName : pureValue,
-            Cards : [],
-        }
-        setRowTitles(rowTitles.concat(RowObject));
+        dispatch(addNewColumn(pureValue));
         setAddAnotherRowFlag(false);
         
     }
     function addingUsersCardFunction(InputValue:string, CurrentTitle:string){
         let PureInputValue = InputValue.trim();
         if(PureInputValue.length === 0) return ;
-        for(let i in rowTitles){
-            if(rowTitles[i].RowName === CurrentTitle){
-                let cloneRowTitles = rowTitles;
-                let newCardObjectData = {
-                    CardName: InputValue,
-                    CardDescription: 'Add a more detailed description...',
-                    CardComments: [],
-                };
-                cloneRowTitles[i].Cards.push(newCardObjectData);
-                setRowTitles(cloneRowTitles);   
-                break;
+        for(let i in appDataArray){
+            if(appDataArray[i].RowName === CurrentTitle){
+                dispatch(addCard([PureInputValue, i]))
             }
         }
-        setRowTitles(rowTitles.concat([]));
+        setRowTitles(appDataArray.concat([]));
     }
-    function setEditedRowTitle(newName:string, oldName:string){
-        let cloneRowTitles = rowTitles;
-        cloneRowTitles.map(elem=>{
-            if(elem.RowName === oldName) { return elem.RowName = newName; }
-        })
-        setRowTitles(cloneRowTitles.concat([]));
-        
-    }
-    function deleteRowFunction(neededTitle:string){
-        let cloneRowTitles = rowTitles;
-        for(let i in cloneRowTitles){
-            if(cloneRowTitles[i].RowName === neededTitle){
-                cloneRowTitles.splice(parseInt(i), 1);
-                break;
-            }
-        }
-        setRowTitles(cloneRowTitles.concat([]));
-    }
+    
+    
     
     
     return(
         <Wrapper>
-            {rowTitles.map((title, index)=>{ return <Row key={`${title}-${index}`} deleteRowFunction={deleteRowFunction} getEditedTitle={setEditedRowTitle} getClickedCardTitle={props.getClickedCardTitle}  addingCardFunction={addingUsersCardFunction} cardData={title.Cards} title={title.RowName}/>})}
+            {appDataArray.map((title, index)=>{ return <Row key={`${title}-${index}`}   getClickedCardTitle={props.getClickedCardTitle}  addingCardFunction={addingUsersCardFunction} cardData={title.Cards} title={title.RowName}/>})}
             {addAnotherRowFlag === false ? <AddAnotherRow onClick={()=>{setAddAnotherRowFlag(!addAnotherRowFlag)}}>Add another list</AddAnotherRow> 
             : <AddAnotherRowWrapper>
                 <AddAnotherRowWrapperInput  placeholder="Enter list title" ref={addAnotherRowInput}></AddAnotherRowWrapperInput>
