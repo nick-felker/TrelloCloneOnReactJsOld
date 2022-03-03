@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
+
 import styled from "styled-components";
 import TrelelloCardField from "../TrelelloCardField/TrelelloCardField";
 import CardModalWindow from "../../ModalWindows/CardModalWindow";
@@ -7,7 +8,9 @@ import { MainAppRowArray } from "../../../types";
 
 
 
+
 const TrelelloApp = () =>{
+    
     let [cardModalWindowFlag, setCardModalWindowFlag] = useState(false);
     let [deleteCardFlag, setDeleteCardFlag] = useState(false);
     let [cardModalWindowTitle, setCardModalWindowTitle] = useState('');
@@ -17,6 +20,9 @@ const TrelelloApp = () =>{
     let [commentsList, setCommentsList] = useState<string[]>([]);
     let [modalWindowRowName, setModalWindowRowName] = useState<string>();
     let [editedCardTitle, setEditedCardTitle] = useState(''); 
+    
+    
+
     useEffect(()=>{
         setDeleteCommentName('')
     },[deleteCommentName])

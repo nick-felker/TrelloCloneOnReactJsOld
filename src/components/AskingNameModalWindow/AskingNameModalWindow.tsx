@@ -1,13 +1,17 @@
 import React from "react";
 import styled from "styled-components";
+import {useSelector, useDispatch} from 'react-redux';
+import { RootState } from "../../store/store";
+import {addUserName} from './../../store/reducers/addUserName';
 
-type Props = {
-    ReadingUserNameFunction: Function;
-}
 
-const AskingNameModalWindow = (props: Props) =>{
+
+const AskingNameModalWindow = () =>{
+    
+    const dispatch = useDispatch();
     let inputField = React.useRef<HTMLInputElement>(null);
     const onSubmit = () => {
+        
         if(inputField === undefined) return;
         const inputValue = inputField.current?.value + '';
         let purValue = inputField.current?.value.trim();
@@ -15,14 +19,19 @@ const AskingNameModalWindow = (props: Props) =>{
             alert('Put name');
             return;
         }
-        localStorage.setItem('TrelelloUserName', inputValue);
-        props.ReadingUserNameFunction(inputValue);
+        else{
+            dispatch(addUserName(inputField.current?.value || ''))
+            localStorage.setItem('TrelelloUserName', inputValue);
+        }
+        
+        
     }
     return(
         <>
             <Wrapper>
                 <Input placeholder="Put your name here" ref={inputField}></Input>
                 <Button onClick={onSubmit}>Submit</Button>
+                
             </Wrapper>
            
         </>
