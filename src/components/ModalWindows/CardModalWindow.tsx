@@ -1,15 +1,15 @@
 
 import React, { useEffect, useState, useRef } from "react";
 import styled from "styled-components";
-import { useDispatch, useSelector } from "react-redux";
+import {Form, Field} from 'react-final-form';
+import { useAppSelector, useAppDispatch } from "../../types";
 import { addComment, setDescription, setRenameCard} from "../../store/reducers/mainAppFunctional";
-import { RootState } from "../../store/store";
+import { RootState } from "../../store/appStore/store";
 
 
 const CardModalWindow:React.FC<any> = (props) =>{
-    const dispatch = useDispatch();
-    
-    let [editCardTitleFlag, setEditCardTitleFlag] = useState<boolean>(false);
+    const dispatch = useAppDispatch();
+    let[editCardTitleFlag, setEditCardTitleFlag] = useState<boolean>(false);
     let [editDescriptionFlag, setEditDescriptionFlag] = useState<boolean>(false);
     let [commentsList, setCommentsList] = useState<any[]>([]);
     let [descriptionContain, setDescriptionContain] = useState<string>('Add a more detailed description...')
@@ -17,6 +17,16 @@ const CardModalWindow:React.FC<any> = (props) =>{
     let descriptionInputField = React.useRef<HTMLInputElement>(null);
     let commentsInputField = React.useRef<HTMLInputElement>(null);
 
+
+    interface newCardName{
+        newCardName: string;
+    }
+    interface newDescription{
+        newDescription: string;
+    }
+    interface newComment{
+        newComment: string;
+    }
     
     useEffect(()=>{
         let cloneRowTitles = props.rowTitlesArray;
@@ -32,25 +42,21 @@ const CardModalWindow:React.FC<any> = (props) =>{
     }, [props.rowTitlesArray])
     
 
-    function saveNewDescription(e:any){
-        if(e.key === 'Enter'){
-            let pureValue = descriptionInputField.current?.value.trim();
-            if(pureValue?.length === 0) return;
-            dispatch(setDescription([props.modalWindowTitle, pureValue]))
+    function saveNewDescription(values:newDescription){
+            if(values.newDescription.trim().length === 0) return;
+            dispatch(setDescription([props.modalWindowTitle, values.newDescription.trim()]))
             setEditDescriptionFlag(false);
-        } 
+        
     }
 
-    function AddNewCommentFunction(){
-        let pureValue = commentsInputField.current?.value.trim();
-        if(pureValue?.length === 0) return;
-            dispatch(addComment([props.modalWindowTitle, pureValue]))
+    function AddNewCommentFunction(values:newComment){
+        alert(values.newComment)
             
     }
-    function saveEditedCardTitle(){
-        let pureValue = editCardTitleInputField.current?.value.trim();
-        if(pureValue?.length === 0) return; 
-        dispatch(setRenameCard([props.modalWindowTitle, pureValue]));
+    function saveEditedCardTitle(values:newCardName){
+        if(values.newCardName === undefined) return
+        if(values.newCardName.trim().length === 0) return; 
+        dispatch(setRenameCard([props.modalWindowTitle, values.newCardName]));
         setEditCardTitleFlag(false);
     }
 
@@ -61,7 +67,38 @@ const CardModalWindow:React.FC<any> = (props) =>{
                 <CardModalWindowWrapper>
                     <ModalWindowCloseButtonPlusTitleWrapper>
                         <ModalWindowTitleWrapper>
-                            {editCardTitleFlag === false ? <ModalTitleWrapper><ModalTitle onClick={()=>{setEditCardTitleFlag(true)}}>{props.modalWindowTitle}</ModalTitle></ModalTitleWrapper> : <ModalTitleWrapper><ModalTitleInput ref={editCardTitleInputField} ></ModalTitleInput><SaveEditedCardTitle onClick={saveEditedCardTitle}>Save</SaveEditedCardTitle></ModalTitleWrapper> }
+                            {editCardTitleFlag === false ? <ModalTitleWrapper><ModalTitle onClick={()=>{setEditCardTitleFlag(true)}}>{props.modalWindowTitle}</ModalTitle></ModalTitleWrapper>
+                            : 
+                            <Form
+                                onSubmit={saveEditedCardTitle}
+                                render={({handleSubmit, values}) =>(
+                                    <form
+                                        onSubmit={handleSubmit}
+                                    >
+                                        <ModalTitleWrapper>
+                                        <Field
+                                            name='newCardName'
+                                        >
+                                            {props =>(
+                                                <>
+                                                    <ModalTitleInput
+                                                        onChange={props.input.onChange}
+                                                        name={props.input.name}
+                                                        value={props.input.value}
+                                                        autoComplete='off'
+                                                    />
+                                                </>
+                                            )}
+                                        </Field>
+                                        {JSON.stringify(values)}
+                                        <SaveEditedCardTitle onClick={handleSubmit}>Save</SaveEditedCardTitle>
+                                        </ModalTitleWrapper>
+                                    </form>
+                                )}
+
+                            >
+                            </Form>
+                            }
                             
                             <ListOwner>Author - <u>{localStorage.getItem('TrelelloUserName')}</u></ListOwner>
                             <CurrentRowWrapper>
@@ -76,13 +113,57 @@ const CardModalWindow:React.FC<any> = (props) =>{
                     <DescriptionWrapper>
                         <DescriptionWrapperTitle>Description</DescriptionWrapperTitle>
                         {editDescriptionFlag === false ? 
-                        <DescriptionWrapperText onClick={()=>setEditDescriptionFlag(true)}>{descriptionContain}</DescriptionWrapperText> : <DescriptionWrapperTextInput ref={descriptionInputField} onKeyDown={saveNewDescription}></DescriptionWrapperTextInput>}
+                        <DescriptionWrapperText onClick={()=>setEditDescriptionFlag(true)}>{descriptionContain}</DescriptionWrapperText>
+                        :
+                        <Form
+                            onSubmit={saveNewDescription}
+                            render={({handleSubmit, values})=>(
+                                <form>
+                                    <Field
+                                        name='setDescription'
+                                    >
+                                        {props =>(
+                                            <DescriptionWrapperTextInput onSubmit={handleSubmit}
+                                                name={props.input.name}
+                                                onChange={props.input.onChange}
+                                                value={props.input.value}
+                                                autoComplete='off'
+                                            />
+                                        )}
+
+                                    </Field>
+                                </form>
+                            )}
+                        >
+
+                        </Form>
+                        }
                     </DescriptionWrapper>
                     <CommentsWrapper>
                         <CommentsWrapperTitle>Comments</CommentsWrapperTitle>
-                        <CommentsInputFieldBlock ref={commentsInputField}></CommentsInputFieldBlock>
-                        <CommentsAddComment onClick={AddNewCommentFunction}>Add a comment</CommentsAddComment>
-                        
+                        <Form
+                            onSubmit={AddNewCommentFunction}
+                            render={({handleSubmit, values}) =>(
+                                <form
+                                    onSubmit={handleSubmit}
+                                >
+                                <Field
+                                    name="newComment"
+                                >
+                                {props =>(
+                                     <CommentsInputFieldBlock 
+                                     onSubmit={handleSubmit}
+                                     value={props.input.value}
+                                     onChange={props.input.onChange}
+                                     autoComplete="off"
+                                    />
+                                )}
+                                </Field>
+                                <CommentsAddComment onClick={handleSubmit}>Add a comment</CommentsAddComment>
+                                </form>
+                            )}
+                        >
+                        </Form>
                         {commentsList.map((comment, index)=>{
                             return(<> 
                                     <CommentOwner>{localStorage.getItem('TrelelloUserName')}</CommentOwner>

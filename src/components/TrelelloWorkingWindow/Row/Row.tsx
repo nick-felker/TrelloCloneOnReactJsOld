@@ -1,52 +1,81 @@
 import React from "react";
 import styled from "styled-components";
 import { useState } from "react";
-import {useSelector, useDispatch} from 'react-redux';
+import { newCardName, newColumnName } from "../../../types";
+import { Field, Form } from "react-final-form";
+import { addCard, deleteCurrentColumn, setRenameColumn } from "../../../store/reducers/mainAppFunctional";
+import { useAppDispatch, useAppSelector } from "../../../types";
 
 import Xicon from '../../../Images/X.png';
-import {deleteCurrentColumn, setRenameColumn } from '../../../store/reducers/mainAppFunctional';
+
 
 
 type Props = {
     key: string;
     getClickedCardTitle: Function;
-    addingCardFunction: Function;
+    
     cardData: any[];
     title: string;
 
 }
 
 const Row = (props: Props) =>{
-    const dispatch = useDispatch();
-    /*let [UserCardData, setNewCard] = useState(['']);*/
+    const dispatch = useAppDispatch();
     let [showAddingMenuFlag, setShowAddingMenuFlag] = useState(true);
     let [editRowTitleFlag, setEditRowTitleFlag] = useState(false);
-    let cardTitleInputField = React.useRef<HTMLInputElement>(null);
-    let newCardInputField = React.useRef<HTMLTextAreaElement>(null);
     let AddingAdditionalMenuField = (props:any) =>{
+    
+    function addNewCard(values:newCardName){
+        if(values.newCardName === undefined) return
+        if(values.newCardName.trim().length === 0) return
+        dispatch(addCard([values.newCardName, props.props.title]));
+    }
+    
         return(
-            <AdditionalMenu>
-                <AdditionalMenuInput ref={newCardInputField}/>
-                <AdditionalMenuUnderLine>
-                    <AdditionalMenuUnderLineAddButton  onClick={()=>{props.props.addingCardFunction(newCardInputField.current?.value, props.props.title)}}> Add card</AdditionalMenuUnderLineAddButton>
-                    <AdditionalMenuUnderLineDeleteButton onClick={()=>{setShowAddingMenuFlag(true)}}>
-                        <AdditionalMenuUnderLineDeleteButtonImg src={Xicon}></AdditionalMenuUnderLineDeleteButtonImg>
-                    </AdditionalMenuUnderLineDeleteButton>
-                </AdditionalMenuUnderLine>
-            </AdditionalMenu>
+            <Form
+                onSubmit={addNewCard}
+                render={({handleSubmit, values}) =>(
+                    <form 
+                        onSubmit={handleSubmit}
+                    >
+                    <Field
+                        name='newCardName'
+                    >
+                        {props =>(
+                            <>
+                                <AdditionalMenuInput
+                                    onSubmit={handleSubmit}
+                                    name={props.input.name}
+                                    onChange={props.input.onChange}
+                                    value={props.input.value}
+                                    autoComplete='off'
+                                />
+                            </>
+                        )}
+                    </Field>
+                    <AdditionalMenu>
+                        <AdditionalMenuUnderLine>
+                            <AdditionalMenuUnderLineAddButton > Add card</AdditionalMenuUnderLineAddButton>
+                            <AdditionalMenuUnderLineDeleteButton onClick={()=>{setShowAddingMenuFlag(true)}}>
+                                <AdditionalMenuUnderLineDeleteButtonImg src={Xicon}></AdditionalMenuUnderLineDeleteButtonImg>
+                            </AdditionalMenuUnderLineDeleteButton>
+                        </AdditionalMenuUnderLine>
+                    </AdditionalMenu>
+                    </form>
+                )}
+            >
+            
+            </Form>
         )
     }
-    function deleteColumn(neededTitle:string){
-        dispatch(deleteCurrentColumn(neededTitle));
-    }
-    function renameColumn(e:any){
-        if(e.key === 'Enter'){
-            let pureValue = cardTitleInputField.current?.value;
-            if(pureValue === '' || pureValue === undefined) return;
+    
+    function renameColumn(values:newColumnName){
+            if(values.newColumnName === undefined || values.newColumnName.trim().length === 0) return;
             setEditRowTitleFlag(false);
-            dispatch(setRenameColumn([props.title, pureValue]))
-            
-        } 
+            dispatch(setRenameColumn([props.title, values.newColumnName]))
+    }
+    function deleteColumn(title:string){
+        dispatch(deleteCurrentColumn(title))
     }
    
     return(
@@ -54,8 +83,41 @@ const Row = (props: Props) =>{
         
             <Wrapper>
                 <TitleWrapper>
-                {editRowTitleFlag === false ? <CardTitle onClick={()=>{setEditRowTitleFlag(true)}} >{props.title}</CardTitle> : <CardTitleInput  ref={cardTitleInputField} onKeyDown={renameColumn} placeholder={props.title}></CardTitleInput>}
+                {editRowTitleFlag === false ? 
+                <>
+                <ColumnTitle onClick={()=>{setEditRowTitleFlag(true)}} >{props.title}</ColumnTitle>
                 <DeleteRowButton onClick={()=>{deleteColumn(props.title)}}><DeleteRowButtonImage src={Xicon}></DeleteRowButtonImage></DeleteRowButton>
+                </>
+                : 
+                <Form
+                    onSubmit={renameColumn}
+                    render={({ handleSubmit, values}) =>(
+                        <form
+                            onSubmit={handleSubmit}
+                        >
+                            <Field
+                                name='newColumnName'
+                            >
+                                {props => (
+                                    <>
+                                        <ColumnTitleInput
+                                            onSubmit={handleSubmit}
+                                            value={props.input.value}
+                                            name={props.input.name}
+                                            onChange={props.input.onChange}
+                                            autoComplete='off'
+                                        />
+                                    </>
+                                )}
+                                
+                            </Field>
+                            
+                        </form>
+
+                    )}
+                />
+                }
+                
                 </TitleWrapper>
                 {props.cardData.map((elem:any)=>{return <Card key={props.cardData.indexOf(elem, 0)} onClick={()=>props.getClickedCardTitle(elem.CardName, true, props.title)}>{elem.CardName}</Card>})}
                 
@@ -78,7 +140,7 @@ const Wrapper = styled.div`
     max-width: 210px;
     padding: 5px 15px 10px 15px;
 `
-const CardTitle = styled.p`
+const ColumnTitle = styled.p`
     color: #40516d;
     font-size: 19px;
     padding-top: 10px;
@@ -88,12 +150,12 @@ const CardTitle = styled.p`
     margin-bottom: 10px;
     cursor: pointer;
 `
-const CardTitleInput = styled.input`
+const ColumnTitleInput = styled.input`
     color: #40516d;
     margin-top: 15px;
     font-size: 19px;
     position: relative;
-    max-width:85%;
+    max-width: 85%;
     margin-bottom: 15px;
     overflow: visible;
     outline: none;

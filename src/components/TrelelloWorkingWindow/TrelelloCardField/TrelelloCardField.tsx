@@ -1,14 +1,15 @@
 import React from "react";
 import styled from "styled-components";
 import { useState, useEffect } from "react";
-import {useSelector, useDispatch} from 'react-redux';
+import {Form, Field} from 'react-final-form';
+import { useAppSelector, useAppDispatch } from "../../../types";
 import {addNewColumn, takeNewAppDataArrayFromLocalStorage, addCard, deleteCard, deleteComment} from '../../../store/reducers/mainAppFunctional';
 import Row from "../Row/Row";
 import Xicon from '../../../Images/X.png';
 import { MainAppRowArray } from "../../../types";
-import {RootState} from '../../../store/store';
+import {RootState} from '../../../store/appStore/store';
 
-type Props = {
+interface Props{
     setCardModalWindowTitleFunction: Function;
     takeRenameCardTitle: string;
     takeDeleteCommentName: string;
@@ -22,9 +23,9 @@ type Props = {
 }
 
 const TrelelloCardField = (props:Props) =>{
-    const appDataArray = useSelector((state: RootState) => state.mainAppFunctional.appDataArray);
-    const dispatch = useDispatch();
-    console.log(appDataArray)
+    const appDataArray = useAppSelector((state: RootState) => state.mainAppFunctional.appDataArray);
+    const dispatch = useAppDispatch();
+    
     /*let [RowTitles, setRowTitles] = useState(['Todo','In Progress', 'Testing', 'Done']);*/
     let [rowTitles, setRowTitles] = useState<MainAppRowArray[]>([{RowName : 'ToDo', Cards: []}, {RowName : 'In Progress', Cards: []}, {RowName : 'Testing', Cards: []}, {RowName : 'Done', Cards: []}, ]);
     let [addAnotherRowFlag, setAddAnotherRowFlag] = useState(false);
@@ -45,12 +46,7 @@ const TrelelloCardField = (props:Props) =>{
         setRowTitles(appDataArray)
     }, [appDataArray])
     
-    useEffect(()=>{
-        let cloneRowTitles = localStorage.getItem('RowTitles');
-        if (cloneRowTitles !== null){
-            dispatch(takeNewAppDataArrayFromLocalStorage(JSON.parse(cloneRowTitles)))
-        }
-    }, [])
+    
     
    
 
@@ -66,10 +62,7 @@ const TrelelloCardField = (props:Props) =>{
             }
         }
     }, [props.commentsList]) 
-    useEffect(()=>{
-        localStorage.setItem('RowTitles', JSON.stringify(appDataArray));
-        props.rowTitlesArrayToTrelelloApp(appDataArray);
-    }, [appDataArray])
+    
     
     useEffect(()=>{
         
@@ -100,23 +93,14 @@ const TrelelloCardField = (props:Props) =>{
         
 }, [props.activateDeleteCardButtonFlag])
     
-    const addAnotherRowWrapperAddButtonFunc = () =>{
-        let pureValue = addAnotherRowInput.current?.value.trim();
-        if(pureValue === undefined) return;
-        if(pureValue?.length === 0 ) return;
-        dispatch(addNewColumn(pureValue));
-        setAddAnotherRowFlag(false);
-        
-    }
-    function addingUsersCardFunction(InputValue:string, CurrentTitle:string){
-        let PureInputValue = InputValue.trim();
-        if(PureInputValue.length === 0) return ;
-        for(let i in appDataArray){
-            if(appDataArray[i].RowName === CurrentTitle){
-                dispatch(addCard([PureInputValue, i]))
-            }
-        }
-        setRowTitles(appDataArray.concat([]));
+    interface columnName{
+        columnName: string;
+    }    
+    const createColumn = (values:columnName) =>{
+        if(values.columnName === undefined) return;
+        if(values.columnName.trim().length === 0 ) return;
+        dispatch(addNewColumn(values.columnName));
+        setAddAnotherRowFlag(false);   
     }
     
     
@@ -124,14 +108,41 @@ const TrelelloCardField = (props:Props) =>{
     
     return(
         <Wrapper>
-            {appDataArray.map((title, index)=>{ return <Row key={`${title}-${index}`}   getClickedCardTitle={props.getClickedCardTitle}  addingCardFunction={addingUsersCardFunction} cardData={title.Cards} title={title.RowName}/>})}
+            {appDataArray.map((title:any, index:string)=>{ return <Row key={`${title}-${index}`}   getClickedCardTitle={props.getClickedCardTitle} cardData={title.Cards} title={title.RowName}/>})}
             {addAnotherRowFlag === false ? <AddAnotherRow onClick={()=>{setAddAnotherRowFlag(!addAnotherRowFlag)}}>Add another list</AddAnotherRow> 
             : <AddAnotherRowWrapper>
-                <AddAnotherRowWrapperInput  placeholder="Enter list title" ref={addAnotherRowInput}></AddAnotherRowWrapperInput>
-                <AddAnotherRowWrapperAddButton onClick={addAnotherRowWrapperAddButtonFunc}>Add list</AddAnotherRowWrapperAddButton>
-                <AddAnotherRowWrapperCancelButton onClick={()=>{setAddAnotherRowFlag(!addAnotherRowFlag)}}>
-                    <AddAnotherRowWrapperCancelButtonImg src={Xicon}></AddAnotherRowWrapperCancelButtonImg>
-                </AddAnotherRowWrapperCancelButton>
+                <Form
+                    onSubmit={createColumn}
+                    render={({handleSubmit, values}) =>(
+                        <form
+                            onSubmit={handleSubmit}
+                        >
+                        <Field
+                            name='columnName'
+                        >
+                            {props =>(
+                                <>
+                                    <AddAnotherRowWrapperInput
+                                        placeholder="Enter list title"
+                                        value={props.input.value}
+                                        onChange={props.input.onChange}
+                                        onSubmit={handleSubmit}
+                                        autoComplete='off'
+                                        name={props.input.name}
+                                    />
+                                </>
+                            )}
+                        </Field>
+                        <AddAnotherRowWrapperAddButton onClick={handleSubmit}>Add list</AddAnotherRowWrapperAddButton>
+                        <AddAnotherRowWrapperCancelButton onClick={()=>{setAddAnotherRowFlag(!addAnotherRowFlag)}}>
+                            <AddAnotherRowWrapperCancelButtonImg src={Xicon}></AddAnotherRowWrapperCancelButtonImg>
+                        </AddAnotherRowWrapperCancelButton>
+                        </form>
+                    )}
+                >
+                    
+                </Form>
+                
                 
                     
             </AddAnotherRowWrapper>

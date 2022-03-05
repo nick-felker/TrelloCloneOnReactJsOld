@@ -21,7 +21,7 @@ const initialState: appData = {
     ]
 }
 
-export const addingUserName = createSlice({
+export const AppFunctional = createSlice({
     name: 'mainAppFunctional',
     initialState,
     reducers:{
@@ -56,7 +56,12 @@ export const addingUserName = createSlice({
                 CardDescription: 'Add a more detailed description...',
                 CardComments: [],
             };
-            state.appDataArray[action.payload[1]].Cards.push(newCardObjectData);
+            for(let i in state.appDataArray){
+                if(state.appDataArray[i].RowName === action.payload[1]){
+                    state.appDataArray[i].Cards.push(newCardObjectData);
+                    return
+                }
+            }
         }, 
         deleteCard: (state, action: PayloadAction<any[]>) =>{
             state.appDataArray[action.payload[0]].Cards.splice(Number(action.payload[1]), 1);
@@ -66,9 +71,11 @@ export const addingUserName = createSlice({
                 for(let j in state.appDataArray[i].Cards){
                     if(state.appDataArray[i].Cards[j].CardName === action.payload[0]){
                         state.appDataArray[i].Cards[j].CardComments.push(action.payload[1]);
+                        alert(state.appDataArray[i].Cards[j].CardComments)
                     }
                 }
             }
+            
         },
         setDescription: (state, action: PayloadAction<string[]>) =>{
             for(let i in state.appDataArray){
@@ -98,5 +105,5 @@ export const addingUserName = createSlice({
 
 
 
-export const {addNewColumn, takeNewAppDataArrayFromLocalStorage, setRenameCard, deleteCurrentColumn, setRenameColumn, addCard, deleteCard, addComment, setDescription, deleteComment,}  = addingUserName.actions;
-export default addingUserName.reducer;
+export const {addNewColumn, takeNewAppDataArrayFromLocalStorage, setRenameCard, deleteCurrentColumn, setRenameColumn, addCard, deleteCard, addComment, setDescription, deleteComment,}  = AppFunctional.actions;
+export default AppFunctional.reducer;

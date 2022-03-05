@@ -1,7 +1,7 @@
 import { createSlice , PayloadAction} from "@reduxjs/toolkit";
 
 
-export const addingUserName = createSlice({
+export const addUserNameFunction = createSlice({
     name: 'userName',
     initialState: {
         userName: '',
@@ -15,5 +15,5 @@ export const addingUserName = createSlice({
 
 
 
-export const {addUserName}  = addingUserName.actions;
-export default addingUserName.reducer;
+export const {addUserName}  = addUserNameFunction.actions;
+export default addUserNameFunction.reducer;

@@ -1,15 +1,15 @@
 import React from 'react';
 import TrelelloApp from './components/TrelelloWorkingWindow/TrelelloApp/TrelelloApp';
 import AskingNameModalWindow from './components/AskingNameModalWindow/AskingNameModalWindow';
-import './Styles/App.css'
+import './styles/App.css'
 import { useState, useEffect } from 'react';
-import {useSelector, useDispatch} from 'react-redux';
-import { RootState } from './store/store';
+import { useAppSelector, useAppDispatch } from './types';
+import { RootState } from './store/appStore/store';
 
 
 function App() {
   let [_, setUserNameInLocalStorage] = useState<string>();
-  const userName = useSelector((state: RootState) => state.addingUserName.userName);
+  const userName = useAppSelector((state: RootState) => state.userName.userName);
   useEffect(()=>{
         setUserNameInLocalStorage(userName)
   }, [userName])

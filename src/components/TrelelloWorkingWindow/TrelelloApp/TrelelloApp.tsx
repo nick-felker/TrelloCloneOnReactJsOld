@@ -42,7 +42,20 @@ const TrelelloApp = () =>{
 
     return(
         <Wrapper>
-            {cardModalWindowFlag === false ? null  : <CardModalWindow modalWindowRowName={modalWindowRowName} takeDeleteCommentName={setDeleteCommentName} getEditedCardTitle={setEditedCardTitle} getDescriptionContainFromModalWindow={setDescriptionContain} getCommentsList={setCommentsList}  rowTitlesArray={rowTitles} activateDeleteCardButton={activateDeleteCardButton} hideCardModalWindow={setCardModalWindowFlag} modalWindowTitle={cardModalWindowTitle}></CardModalWindow>}
+            {cardModalWindowFlag === false ? null
+            :
+            <CardModalWindow
+                modalWindowRowName={modalWindowRowName}
+                takeDeleteCommentName={setDeleteCommentName}
+                getEditedCardTitle={setEditedCardTitle}
+                getDescriptionContainFromModalWindow={setDescriptionContain}
+                getCommentsList={setCommentsList}
+                rowTitlesArray={rowTitles}
+                activateDeleteCardButton={activateDeleteCardButton}
+                hideCardModalWindow={setCardModalWindowFlag}
+                modalWindowTitle={cardModalWindowTitle}
+            />
+            }
             <MainHeader> 
                 <MainHeaderLogoText>
                     Trelello
@@ -52,7 +65,18 @@ const TrelelloApp = () =>{
                 </UserNameInMainHeader>
             </MainHeader>
             <MainBody>
-                <TrelelloCardField setCardModalWindowTitleFunction={setCardModalWindowTitle} takeRenameCardTitle={editedCardTitle} takeDeleteCommentName={deleteCommentName} takeDescriptionContainFromTrelelloApp={descriptionContain} commentsList={commentsList} rowTitlesArrayToTrelelloApp={setRowTitles} changeActivateDeleteButtonFlag={activateDeleteCardButton} activateDeleteCardButtonTitle={cardModalWindowTitle}  activateDeleteCardButtonFlag={deleteCardFlag} getClickedCardTitle={getClickedCardTitleAndSetModalFlagTitle}/>
+                <TrelelloCardField
+                setCardModalWindowTitleFunction={setCardModalWindowTitle}
+                takeRenameCardTitle={editedCardTitle}
+                takeDeleteCommentName={deleteCommentName}
+                takeDescriptionContainFromTrelelloApp={descriptionContain}
+                commentsList={commentsList}
+                rowTitlesArrayToTrelelloApp={setRowTitles}
+                changeActivateDeleteButtonFlag={activateDeleteCardButton}
+                activateDeleteCardButtonTitle={cardModalWindowTitle}
+                activateDeleteCardButtonFlag={deleteCardFlag}
+                getClickedCardTitle={getClickedCardTitleAndSetModalFlagTitle}
+                />
             </MainBody>
         </Wrapper>
     )

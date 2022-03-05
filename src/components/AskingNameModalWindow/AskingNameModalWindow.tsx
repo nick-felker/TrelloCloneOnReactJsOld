@@ -1,42 +1,72 @@
 import React from "react";
 import styled from "styled-components";
-import {useSelector, useDispatch} from 'react-redux';
-import { RootState } from "../../store/store";
-import {addUserName} from './../../store/reducers/addUserName';
-
+import { useAppDispatch, useAppSelector } from "../../types";
+import { RootState } from "../../store/appStore/store";
+import { Button, Input } from "../../ui";
+import { Form, Field } from 'react-final-form';
+import {addUserName} from './../../store/reducers/userName/addUserName';
+import { userNameInputValues } from "../../types";
 
 
 const AskingNameModalWindow = () =>{
-    
-    const dispatch = useDispatch();
-    let inputField = React.useRef<HTMLInputElement>(null);
-    const onSubmit = () => {
-        
-        if(inputField === undefined) return;
-        const inputValue = inputField.current?.value + '';
-        let purValue = inputField.current?.value.trim();
-        if(purValue?.length === 0){
-            alert('Put name');
-            return;
-        }
+    const dispatch = useAppDispatch();
+    const onSubmit = (values:userNameInputValues) => {
+        let pureValue = values.userName.trim();
+        if(values.userName === undefined && pureValue.length === 0) return 
         else{
-            dispatch(addUserName(inputField.current?.value || ''))
-            localStorage.setItem('TrelelloUserName', inputValue);
+            dispatch(addUserName(pureValue))
         }
-        
-        
     }
     return(
         <>
-            <Wrapper>
-                <Input placeholder="Put your name here" ref={inputField}></Input>
-                <Button onClick={onSubmit}>Submit</Button>
-                
-            </Wrapper>
-           
+            <Form
+                onSubmit={onSubmit}
+                render={({handleSubmit, values}) => (
+                    <form 
+                        onSubmit={handleSubmit}
+                    >  
+                        <Wrapper>
+                            <Label>Your name in app</Label>
+                            <Field
+                                name='userName'
+                            >
+                                {props =>(
+                                    <>
+                                        <Input
+                                            name={props.input.name}
+                                            value={props.input.value}
+                                            onChange={props.input.onChange}
+                                            autoComplete='off'
+                                        />
+                                    </>
+                                )}
+                            </Field>    
+                            
+                            <Button type="submit">Submit</Button>
+                            <Footnote>You will be called - <UserNameSpan>{values.userName}</UserNameSpan></Footnote>
+                        </Wrapper>
+                    </form>
+                )
+            }
+            />
         </>
     )
 }
+
+const UserNameSpan = styled.span`
+    font-weight: bold;
+`
+
+const Footnote = styled.p`
+    font-size: 17px;
+    text-transform: uppercase;
+    padding-top: 20px;
+`
+
+const Label = styled.label`
+    font-size: 16px;
+    padding-bottom: 10px;
+`
 
 const Wrapper = styled.div`
     background-color: white;
@@ -48,41 +78,6 @@ const Wrapper = styled.div`
     justify-content: center;
     margin-top: 10%;
     
-`
-const Input = styled.input`
-    padding: 20px 0px;
-    outline: none;
-    font-size: 20px;
-    width: 320px;
-    text-align: center;
-    ::placeholder{
-        font-size: 15px;
-        text-transform: uppercase;
-    }
-    :hover{
-        ::placeholder{
-            
-            color: white;
-            transition: 0.5s;
-        }
-    }
-    :focus{
-        ::placeholder{
-            color: white;
-        }
-    }
-`
-const Button = styled.button`
-    outline: none;
-    margin-top: 40px;
-    cursor: pointer;
-    background-color: #f7e24b;
-    border: none;
-    font-size: 20px;
-    text-transform: uppercase;
-    color: white;
-    padding: 15px 20px;
-    border-radius: 5px;
 `
 
 export default AskingNameModalWindow;
