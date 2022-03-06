@@ -10,8 +10,6 @@ import { RootState } from './store/appStore/store';
 function App() {
   let [_, setUserNameInLocalStorage] = useState<string>();
   const userName = useAppSelector((state: RootState) => state.userName.userName);
-  const store = useAppSelector((state:RootState) => state)  
-  console.log(store)
   useEffect(()=>{
         setUserNameInLocalStorage(userName)
   }, [userName])

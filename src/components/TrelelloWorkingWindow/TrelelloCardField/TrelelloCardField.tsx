@@ -9,7 +9,7 @@ import Row from '../Row/Row';
 import Xicon from '../../../Images/X.png';
 import { MainAppRowArray } from "../../../types";
 import {RootState} from '../../../store/appStore/store';
-import {addCard } from '../../../store/reducers/card/reducer';
+import {addCard} from '../../../store/reducers/card/reducer'
 interface Props{
     setCardModalWindowTitleFunction: Function;
     takeRenameCardTitle: string;
@@ -55,15 +55,11 @@ const TrelelloCardField = (props:Props) =>{
         dispatch(addNewColumn(values.columnName));
         setAddAnotherRowFlag(false);   
     }
-    function addSmth(){
-        dispatch(addCard)
-    }
     
     
     return(
         
         <Wrapper>
-            <button onClick={addSmth}>add</button>
             {appDataArray.map((title:any, index:string)=>{ return <Row key={`${title}-${index}`}   getClickedCardTitle={props.getClickedCardTitle} cardData={title.Cards} title={title.RowName}/>})}
             {addAnotherRowFlag === false ? <AddAnotherRowButton onClick={()=>{setAddAnotherRowFlag(!addAnotherRowFlag)}}>Add another list</AddAnotherRowButton> 
             : <AddAnotherRowWrapper>
