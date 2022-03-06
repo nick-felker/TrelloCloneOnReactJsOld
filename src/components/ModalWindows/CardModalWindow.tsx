@@ -2,46 +2,23 @@
 import React, { useEffect, useState, useRef } from "react";
 import styled from "styled-components";
 import {Form, Field} from 'react-final-form';
-import { useAppSelector, useAppDispatch } from "../../types";
+import { useAppSelector, useAppDispatch, newComment, newCardName, newDescription } from "../../types";
 import { addComment, setDescription, setRenameCard} from "../../store/reducers/mainAppFunctional";
 import { RootState } from "../../store/appStore/store";
 
 
 const CardModalWindow:React.FC<any> = (props) =>{
+    const userName = useAppSelector((state:RootState) => state.userName.userName)
     const dispatch = useAppDispatch();
     let[editCardTitleFlag, setEditCardTitleFlag] = useState<boolean>(false);
     let [editDescriptionFlag, setEditDescriptionFlag] = useState<boolean>(false);
     let [commentsList, setCommentsList] = useState<any[]>([]);
-    let [descriptionContain, setDescriptionContain] = useState<string>('Add a more detailed description...')
-    let editCardTitleInputField = React.useRef<HTMLInputElement>(null);
-    let descriptionInputField = React.useRef<HTMLInputElement>(null);
-    let commentsInputField = React.useRef<HTMLInputElement>(null);
+    let [descriptionContain, setDescriptionContain] = useState<string>('Add a more detailed description...');
 
 
-    interface newCardName{
-        newCardName: string;
-    }
-    interface newDescription{
-        newDescription: string;
-    }
-    interface newComment{
-        newComment: string;
-    }
     
-    useEffect(()=>{
-        let cloneRowTitles = props.rowTitlesArray;
-        for(let i in cloneRowTitles){
-            for(let j in cloneRowTitles[i].Cards){
-                if(cloneRowTitles[i].Cards[j].CardName === props.modalWindowTitle){
-                    setCommentsList(cloneRowTitles[i].Cards[j].CardComments);
-                    setDescriptionContain(props.rowTitlesArray[i].Cards[j].CardDescription)
-                    break;
-                }
-            }
-        }
-    }, [props.rowTitlesArray])
+   
     
-
     function saveNewDescription(values:newDescription){
             if(values.newDescription.trim().length === 0) return;
             dispatch(setDescription([props.modalWindowTitle, values.newDescription.trim()]))
@@ -90,7 +67,6 @@ const CardModalWindow:React.FC<any> = (props) =>{
                                                 </>
                                             )}
                                         </Field>
-                                        {JSON.stringify(values)}
                                         <SaveEditedCardTitle onClick={handleSubmit}>Save</SaveEditedCardTitle>
                                         </ModalTitleWrapper>
                                     </form>
@@ -100,7 +76,7 @@ const CardModalWindow:React.FC<any> = (props) =>{
                             </Form>
                             }
                             
-                            <ListOwner>Author - <u>{localStorage.getItem('TrelelloUserName')}</u></ListOwner>
+                            <ListOwner>Author - <u>{userName}</u></ListOwner>
                             <CurrentRowWrapper>
                                 <CurrentRowTitle>In row <u>{props.modalWindowRowName}</u></CurrentRowTitle>
                             </CurrentRowWrapper>
@@ -166,7 +142,7 @@ const CardModalWindow:React.FC<any> = (props) =>{
                         </Form>
                         {commentsList.map((comment, index)=>{
                             return(<> 
-                                    <CommentOwner>{localStorage.getItem('TrelelloUserName')}</CommentOwner>
+                                    <CommentOwner>{userName}</CommentOwner>
                                     <NewComment key={`${comment}-${index}`}>{comment} <DeleteCommentButton key={commentsList.indexOf(comment, 0)} onClick={()=>props.takeDeleteCommentName(comment)}>Del</DeleteCommentButton></NewComment>
                                     
                             </>)

@@ -12,10 +12,18 @@ export interface MainAppRowArray {
 export interface newCardName{
     newCardName: string;
 }
+export interface newComment{
+    newComment: string;
+}
 
+export  interface newDescription{
+    newDescription: string;
+}
 export interface newColumnName{
     newColumnName: string;
 }
+
+
 
 export interface MainAppRowArrayCard{
     CardName: string;

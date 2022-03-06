@@ -32,9 +32,7 @@ export const AppFunctional = createSlice({
             }
             state.appDataArray = state.appDataArray.concat(RowObject);
         },
-        takeNewAppDataArrayFromLocalStorage: (state, action: PayloadAction<MainAppRowArray[]>) =>{
-            state.appDataArray = action.payload;
-        },
+
         deleteCurrentColumn: (state, action: PayloadAction<string>) =>{
             for(let i in state.appDataArray){
                 if(state.appDataArray[i].RowName === action.payload){
@@ -105,5 +103,5 @@ export const AppFunctional = createSlice({
 
 
 
-export const {addNewColumn, takeNewAppDataArrayFromLocalStorage, setRenameCard, deleteCurrentColumn, setRenameColumn, addCard, deleteCard, addComment, setDescription, deleteComment,}  = AppFunctional.actions;
+export const {addNewColumn, setRenameCard, deleteCurrentColumn, setRenameColumn, addCard, deleteCard, addComment, setDescription, deleteComment,}  = AppFunctional.actions;
 export default AppFunctional.reducer;

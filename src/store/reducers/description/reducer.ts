@@ -12,8 +12,8 @@ export const descriptionFunction = createSlice({
     name: 'description',
     initialState, 
     reducers:{
-        setDescription: (state:description, action:PayloadAction<string>) =>{
-
+        setDescription: (state, action: PayloadAction<string[]>) =>{
+           
         },
     }
 })

@@ -1,7 +1,5 @@
 import {configureStore, combineReducers} from '@reduxjs/toolkit';
-import addingUserName from '../reducers/userName/addUserName';
-import mainAppFunctional from "../reducers/mainAppFunctional";
-import { persistStore,
+import  {persistStore,
          persistReducer,
          FLUSH,
          REHYDRATE,
@@ -9,22 +7,15 @@ import { persistStore,
          PERSIST, 
          PURGE,
          REGISTER,
-         } 
+        } 
          from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
-
+import rootReducer from '../reducers/rootReducer';
 
 const persistConfig = {
     key: 'root',
     storage,
 };
-
-
-const rootReducer = combineReducers({
-    userName: addingUserName,
-    mainAppFunctional: mainAppFunctional,
-});
-
 
 
 export const store  = configureStore({

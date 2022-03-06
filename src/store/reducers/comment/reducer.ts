@@ -12,11 +12,11 @@ export const commentFunction = createSlice({
     name: 'comment',
     initialState, 
     reducers:{
-        addComment: (state:comments, action:PayloadAction<string>) =>{
-
+        addComment: (state, action: PayloadAction<any[]>) =>{
+            
         },
-        deleteComment: (state:comments, action:PayloadAction<string>) =>{
-
+        deleteComment: (state, action: PayloadAction<any[]>) =>{
+            
         },
     }
 })

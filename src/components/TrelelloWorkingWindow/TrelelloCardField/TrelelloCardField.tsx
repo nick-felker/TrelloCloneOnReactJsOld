@@ -1,14 +1,15 @@
 import React from "react";
 import styled from "styled-components";
 import { useState, useEffect } from "react";
+import { AddAnotherRowButton } from "../../../ui";
 import {Form, Field} from 'react-final-form';
 import { useAppSelector, useAppDispatch } from "../../../types";
-import {addNewColumn, takeNewAppDataArrayFromLocalStorage, addCard, deleteCard, deleteComment} from '../../../store/reducers/mainAppFunctional';
-import Row from "../Row/Row";
+import {addNewColumn, deleteCard, deleteComment} from '../../../store/reducers/mainAppFunctional';
+import Row from '../Row/Row';
 import Xicon from '../../../Images/X.png';
 import { MainAppRowArray } from "../../../types";
 import {RootState} from '../../../store/appStore/store';
-
+import {addCard } from '../../../store/reducers/card/reducer';
 interface Props{
     setCardModalWindowTitleFunction: Function;
     takeRenameCardTitle: string;
@@ -23,62 +24,14 @@ interface Props{
 }
 
 const TrelelloCardField = (props:Props) =>{
+    
     const appDataArray = useAppSelector((state: RootState) => state.mainAppFunctional.appDataArray);
+    
+    
     const dispatch = useAppDispatch();
-    
-    /*let [RowTitles, setRowTitles] = useState(['Todo','In Progress', 'Testing', 'Done']);*/
-    let [rowTitles, setRowTitles] = useState<MainAppRowArray[]>([{RowName : 'ToDo', Cards: []}, {RowName : 'In Progress', Cards: []}, {RowName : 'Testing', Cards: []}, {RowName : 'Done', Cards: []}, ]);
     let [addAnotherRowFlag, setAddAnotherRowFlag] = useState(false);
-    let addAnotherRowInput = React.useRef<HTMLInputElement>(null);
-    useEffect(()=>{
-        let cloneRowTitles = [...appDataArray];
-        for(let i in cloneRowTitles){
-            for(let j in cloneRowTitles[i].Cards){
-                if(cloneRowTitles[i].Cards[j].CardName === props.activateDeleteCardButtonTitle){
-                    cloneRowTitles[i].Cards[j].CardDescription = props.takeDescriptionContainFromTrelelloApp;
-                    setRowTitles(cloneRowTitles.concat([]))
-                    break;
-                }
-            }
-        }
-    }, [props.takeDescriptionContainFromTrelelloApp])
-    useEffect(()=>{
-        setRowTitles(appDataArray)
-    }, [appDataArray])
-    
-    
-    
-   
 
-    useEffect(()=>{
-        let cloneRowTitles = [...appDataArray];
-        for(let i in cloneRowTitles){
-            for(let j in cloneRowTitles[i].Cards){
-                if(cloneRowTitles[i].Cards[j].CardName === props.activateDeleteCardButtonTitle){
-                    cloneRowTitles[i].Cards[j].CardComments = props.commentsList;
-                    setRowTitles(cloneRowTitles.concat([]));
-                    break;
-                }
-            }
-        }
-    }, [props.commentsList]) 
-    
-    
-    useEffect(()=>{
-        
-        if(props.takeDeleteCommentName === undefined) return;
-        let cloneRowTitles = [...appDataArray];
-        for(let i in cloneRowTitles){
-            for(let j in cloneRowTitles[i].Cards){
-                for(let y in cloneRowTitles[i].Cards[j].CardComments){
-                    if(cloneRowTitles[i].Cards[j].CardComments[y] === props.takeDeleteCommentName){
-                        dispatch(deleteComment([i, j, y]))
-                        break;  
-                    }
-                }
-            }
-        }
-    }, [props.takeDeleteCommentName])
+         
 
     useEffect(()=>{
         for(let i in appDataArray){
@@ -102,14 +55,17 @@ const TrelelloCardField = (props:Props) =>{
         dispatch(addNewColumn(values.columnName));
         setAddAnotherRowFlag(false);   
     }
-    
-    
+    function addSmth(){
+        dispatch(addCard)
+    }
     
     
     return(
+        
         <Wrapper>
+            <button onClick={addSmth}>add</button>
             {appDataArray.map((title:any, index:string)=>{ return <Row key={`${title}-${index}`}   getClickedCardTitle={props.getClickedCardTitle} cardData={title.Cards} title={title.RowName}/>})}
-            {addAnotherRowFlag === false ? <AddAnotherRow onClick={()=>{setAddAnotherRowFlag(!addAnotherRowFlag)}}>Add another list</AddAnotherRow> 
+            {addAnotherRowFlag === false ? <AddAnotherRowButton onClick={()=>{setAddAnotherRowFlag(!addAnotherRowFlag)}}>Add another list</AddAnotherRowButton> 
             : <AddAnotherRowWrapper>
                 <Form
                     onSubmit={createColumn}
@@ -135,7 +91,7 @@ const TrelelloCardField = (props:Props) =>{
                         </Field>
                         <AddAnotherRowWrapperAddButton onClick={handleSubmit}>Add list</AddAnotherRowWrapperAddButton>
                         <AddAnotherRowWrapperCancelButton onClick={()=>{setAddAnotherRowFlag(!addAnotherRowFlag)}}>
-                            <AddAnotherRowWrapperCancelButtonImg src={Xicon}></AddAnotherRowWrapperCancelButtonImg>
+                            <AddAnotherRowWrapperCancelButtonImg src={Xicon}/>
                         </AddAnotherRowWrapperCancelButton>
                         </form>
                     )}
@@ -159,22 +115,6 @@ const Wrapper = styled.div`
     margin-top: 10px;
     justify-content: flex-start;
     margin-left: 3%;
-`
-const AddAnotherRow = styled.button`
-    background-color: #3d99ce;
-    cursor: pointer;
-    border: none;
-    text-align: center;
-    min-width: 200px;
-    color: white;
-    font-size: 19px;
-    padding: 10px 0px;
-    border-radius: 4px;
-    :hover{
-        background-color: #29688d;
-        color: white;
-        transition: 0.5s;
-    }
 `
 const AddAnotherRowWrapper = styled.div`
     padding: 5px 0px 5px 10px;

@@ -4,7 +4,8 @@ import { useState } from "react";
 import styled from "styled-components";
 import TrelelloCardField from "../TrelelloCardField/TrelelloCardField";
 import CardModalWindow from "../../ModalWindows/CardModalWindow";
-import { MainAppRowArray } from "../../../types";
+import { MainAppRowArray, useAppSelector } from "../../../types";
+import { RootState } from "../../../store/appStore/store";
 
 
 
@@ -20,7 +21,7 @@ const TrelelloApp = () =>{
     let [commentsList, setCommentsList] = useState<string[]>([]);
     let [modalWindowRowName, setModalWindowRowName] = useState<string>();
     let [editedCardTitle, setEditedCardTitle] = useState(''); 
-    
+    const userName = useAppSelector((state:RootState) => state.userName.userName)
     
 
     useEffect(()=>{
@@ -61,7 +62,7 @@ const TrelelloApp = () =>{
                     Trelello
                 </MainHeaderLogoText>
                 <UserNameInMainHeader>
-                    {localStorage.getItem('TrelelloUserName')}
+                    {userName}
                 </UserNameInMainHeader>
             </MainHeader>
             <MainBody>

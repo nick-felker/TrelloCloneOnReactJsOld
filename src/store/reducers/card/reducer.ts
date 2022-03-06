@@ -1,6 +1,5 @@
 import { createSlice , PayloadAction} from "@reduxjs/toolkit";
 
-
 interface card{
     cardName: string;
     cardDescription:string;
@@ -17,17 +16,17 @@ export const cardFunction = createSlice({
     name: 'card',
     initialState,
     reducers:{
-        addCard: (state:card, action:PayloadAction<string[]>) =>{
+        addCard: (state, action: PayloadAction<any[]>) =>{
             
+        }, 
+        deleteCard: (state, action: PayloadAction<any[]>) =>{
+         
         },
-        deleteCard: (state:card, action:PayloadAction<string[]>) =>{
-            
-        },
-        setNewCardName: (state:card, action:PayloadAction<string[]>) =>{
-            
-        },
+        setRenameCard: (state, action: PayloadAction<string[]>) =>{
+           
+        }
     }
 })
 
-export const {addCard, deleteCard, setNewCardName}  = cardFunction.actions;
+export const {addCard, deleteCard, setRenameCard}  = cardFunction.actions;
 export default cardFunction.reducer;
