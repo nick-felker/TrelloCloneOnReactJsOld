@@ -1,15 +1,18 @@
 import React from "react";
 import styled from "styled-components";
 import { useState, useEffect } from "react";
-import { AddAnotherRowButton } from "../../../ui";
+import { AddAnotherRowButton } from "../../../ui/addNewColumn/addButton";
 import {Form, Field} from 'react-final-form';
 import { useAppSelector, useAppDispatch } from "../../../types";
-import {addNewColumn, deleteCard, deleteComment} from '../../../store/reducers/mainAppFunctional';
-import Row from '../Row/Row';
+import { addNewColumn } from "../../../store/reducers/column/reducer";
+import { deleteCard } from "../../../store/reducers/card/reducer";
+import Column from '../Column/Column';
 import Xicon from '../../../Images/X.png';
 import { MainAppRowArray } from "../../../types";
 import {RootState} from '../../../store/appStore/store';
 import {addCard} from '../../../store/reducers/card/reducer'
+
+
 interface Props{
     setCardModalWindowTitleFunction: Function;
     takeRenameCardTitle: string;
@@ -25,7 +28,8 @@ interface Props{
 
 const TrelelloCardField = (props:Props) =>{
     
-    const appDataArray = useAppSelector((state: RootState) => state.mainAppFunctional.appDataArray);
+    const columns = useAppSelector((state: RootState) => state.app.columnFunction.appDataArray);
+    const cards = useAppSelector((state:RootState) => state.app.cardFunction.cards); 
     
     
     const dispatch = useAppDispatch();
@@ -33,22 +37,15 @@ const TrelelloCardField = (props:Props) =>{
 
          
 
-    useEffect(()=>{
-        for(let i in appDataArray){
-            for(let j in appDataArray[i].Cards){
-                 if(appDataArray[i].Cards[j].CardName === props.activateDeleteCardButtonTitle){
-                    dispatch(deleteCard([i, j]))
-                    break;
-                 }
-            }
-        } 
-        props.changeActivateDeleteButtonFlag(false);
-        
-}, [props.activateDeleteCardButtonFlag])
+
     
     interface columnName{
         columnName: string;
     }    
+    interface Columntitle{
+        ColumnName:string;
+        Cards:[];
+    }
     const createColumn = (values:columnName) =>{
         if(values.columnName === undefined) return;
         if(values.columnName.trim().length === 0 ) return;
@@ -60,7 +57,7 @@ const TrelelloCardField = (props:Props) =>{
     return(
         
         <Wrapper>
-            {appDataArray.map((title:any, index:string)=>{ return <Row key={`${title}-${index}`}   getClickedCardTitle={props.getClickedCardTitle} cardData={title.Cards} title={title.RowName}/>})}
+            {columns.map((title:Columntitle, index:string)=>{return <Column key={`${title}-${index}`}   getClickedCardTitle={props.getClickedCardTitle} title={title.ColumnName}/>})}
             {addAnotherRowFlag === false ? <AddAnotherRowButton onClick={()=>{setAddAnotherRowFlag(!addAnotherRowFlag)}}>Add another list</AddAnotherRowButton> 
             : <AddAnotherRowWrapper>
                 <Form

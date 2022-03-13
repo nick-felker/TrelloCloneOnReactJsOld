@@ -7,10 +7,10 @@ interface appData{
 
 const initialState:appData = {
     appDataArray : [
-        {RowName : 'ToDo', Cards: []},
-        {RowName : 'In Progress', Cards: []},
-        {RowName : 'Testing', Cards: []}, 
-        {RowName : 'Done', Cards: []},
+        {ColumnName : 'ToDo', Cards: []},
+        {ColumnName : 'In Progress', Cards: []},
+        {ColumnName : 'Testing', Cards: []}, 
+        {ColumnName : 'Done', Cards: []},
     ]
 }
 
@@ -19,16 +19,21 @@ export const columnFunction = createSlice({
     initialState,
     reducers: {
         addNewColumn: (state, action: PayloadAction<string>) =>{
-          
+            state.appDataArray.push({ColumnName:action.payload, Cards:[]});
         },
         deleteCurrentColumn: (state, action: PayloadAction<string>) =>{
-           
+           state.appDataArray = state.appDataArray.filter(Column => Column.ColumnName !== action.payload)
         },
-        setRenameColumn: (state, action: PayloadAction<any[]>) =>{
+        setRenameColumn: (state, action: PayloadAction<string[]>) =>{
+            let cloneRowTitles = state.appDataArray;
+            cloneRowTitles.map(elem =>{
+            if(elem.ColumnName === action.payload[0]) { return elem.ColumnName = action.payload[1]; }
+            })
+            state.appDataArray = cloneRowTitles;
             
         },
     }
 })
 
-export const {addNewColumn, setRenameColumn}  = columnFunction.actions;
+export const {addNewColumn, setRenameColumn, deleteCurrentColumn}  = columnFunction.actions;
 export default columnFunction.reducer;

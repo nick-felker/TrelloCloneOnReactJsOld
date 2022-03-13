@@ -6,7 +6,7 @@ import { TypedUseSelectorHook } from "react-redux";
 import type { RootState } from "../store/appStore/store";
 
 export interface MainAppRowArray {
-    RowName: string;
+    ColumnName: string;
     Cards: MainAppRowArrayCard[];
 }
 export interface newCardName{

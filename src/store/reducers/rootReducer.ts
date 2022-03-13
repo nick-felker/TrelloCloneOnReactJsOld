@@ -2,7 +2,8 @@
 import { combineReducers, createSlice } from "@reduxjs/toolkit";
 import addUserName from '../reducers/userName/addUserName';
 import mainAppFunctional from '../reducers/mainAppFunctional';
-import columnFunction  from '../reducers/column/reducer';
+import columnFunction  from './column/reducer';
+import  cardFunction  from "./card/reducer";
 
 
 const initialState = {
@@ -14,10 +15,15 @@ const initialState = {
     ]
 }
 
+const combinedAppReducer = combineReducers({
+    columnFunction,
+    cardFunction,
+})
+
 const rootReducer = combineReducers({
     userName: addUserName,
     mainAppFunctional: mainAppFunctional,
-    app: columnFunction
+    app: combinedAppReducer,
 })
 
 export default rootReducer;

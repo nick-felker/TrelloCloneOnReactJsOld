@@ -14,10 +14,10 @@ export interface appData{
 
 const initialState: appData = {
     appDataArray : [
-        {RowName : 'ToDo', Cards: []},
-        {RowName : 'In Progress', Cards: []},
-        {RowName : 'Testing', Cards: []}, 
-        {RowName : 'Done', Cards: []},
+        {ColumnName : 'ToDo', Cards: []},
+        {ColumnName : 'In Progress', Cards: []},
+        {ColumnName : 'Testing', Cards: []}, 
+        {ColumnName : 'Done', Cards: []},
     ]
 }
 
@@ -27,7 +27,7 @@ export const AppFunctional = createSlice({
     reducers:{
         addNewColumn: (state, action: PayloadAction<string>) =>{
             let RowObject: MainAppRowArray = {
-                RowName : action.payload,
+                ColumnName : action.payload,
                 Cards : [],
             }
             state.appDataArray = state.appDataArray.concat(RowObject);
@@ -35,7 +35,7 @@ export const AppFunctional = createSlice({
 
         deleteCurrentColumn: (state, action: PayloadAction<string>) =>{
             for(let i in state.appDataArray){
-                if(state.appDataArray[i].RowName === action.payload){
+                if(state.appDataArray[i].ColumnName === action.payload){
                     state.appDataArray.splice(parseInt(i), 1);
                     break;
                 }
@@ -44,7 +44,7 @@ export const AppFunctional = createSlice({
         setRenameColumn: (state, action: PayloadAction<any[]>) =>{
             let cloneRowTitles = state.appDataArray;
             cloneRowTitles.map(elem =>{
-            if(elem.RowName === action.payload[0]) { return elem.RowName = action.payload[1]; }
+            if(elem.ColumnName === action.payload[0]) { return elem.ColumnName = action.payload[1]; }
             })
             state.appDataArray = cloneRowTitles;
         },
@@ -55,7 +55,7 @@ export const AppFunctional = createSlice({
                 CardComments: [],
             };
             for(let i in state.appDataArray){
-                if(state.appDataArray[i].RowName === action.payload[1]){
+                if(state.appDataArray[i].ColumnName === action.payload[1]){
                     state.appDataArray[i].Cards.push(newCardObjectData);
                     return
                 }

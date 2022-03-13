@@ -3,32 +3,36 @@ import styled from "styled-components";
 import { useState } from "react";
 import { newCardName, newColumnName } from "../../../types";
 import { Field, Form } from "react-final-form";
-import { addCard, deleteCurrentColumn, setRenameColumn } from "../../../store/reducers/mainAppFunctional";
+import { addCard } from "../../../store/reducers/card/reducer";
+import { deleteCurrentColumn, setRenameColumn } from "../../../store/reducers/column/reducer";
 import { useAppDispatch, useAppSelector } from "../../../types";
 
 import Xicon from '../../../Images/X.png';
+import { RootState } from "../../../store/appStore/store";
 
 
 
-type Props = {
+interface Props{
     key: string;
     getClickedCardTitle: Function;
-    
-    cardData: any[];
     title: string;
 
 }
 
-const Row = (props: Props) =>{
+const Column = (props: Props) =>{
+    const cards = useAppSelector((state:RootState) => state.app.cardFunction.cards)
     const dispatch = useAppDispatch();
     let [showAddingMenuFlag, setShowAddingMenuFlag] = useState(true);
-    let [editRowTitleFlag, setEditRowTitleFlag] = useState(false);
+    let [editColumnTitleFlag, setEditColumnTitleFlag] = useState(false);
+
+
     let AddingAdditionalMenuField = (props:any) =>{
     
     function addNewCard(values:newCardName){
         if(values.newCardName === undefined) return
         if(values.newCardName.trim().length === 0) return
-        dispatch(addCard([values.newCardName, props.props.title]));
+        dispatch(addCard(values.newCardName));
+        console.log(cards)
     }
     
         return(
@@ -71,7 +75,7 @@ const Row = (props: Props) =>{
     
     function renameColumn(values:newColumnName){
             if(values.newColumnName === undefined || values.newColumnName.trim().length === 0) return;
-            setEditRowTitleFlag(false);
+            setEditColumnTitleFlag(false);
             dispatch(setRenameColumn([props.title, values.newColumnName]))
     }
     function deleteColumn(title:string){
@@ -83,9 +87,9 @@ const Row = (props: Props) =>{
         
             <Wrapper>
                 <TitleWrapper>
-                {editRowTitleFlag === false ? 
+                {editColumnTitleFlag === false ? 
                 <>
-                <ColumnTitle onClick={()=>{setEditRowTitleFlag(true)}} >{props.title}</ColumnTitle>
+                <ColumnTitle onClick={()=>{setEditColumnTitleFlag(true)}} >{props.title}</ColumnTitle>
                 <DeleteRowButton onClick={()=>{deleteColumn(props.title)}}><DeleteRowButtonImage src={Xicon}></DeleteRowButtonImage></DeleteRowButton>
                 </>
                 : 
@@ -119,7 +123,7 @@ const Row = (props: Props) =>{
                 }
                 
                 </TitleWrapper>
-                {props.cardData.map((elem:any)=>{return <Card key={props.cardData.indexOf(elem, 0)} onClick={()=>props.getClickedCardTitle(elem.CardName, true, props.title)}>{elem.CardName}</Card>})}
+                {cards.map((elem:any)=>{console.log(); return <Card key={cards.indexOf(elem, 0)} onClick={()=>props.getClickedCardTitle(elem.cardName, true, props.title)}>{elem.cardName}</Card>})}
                 
             
                 
@@ -279,4 +283,4 @@ const DeleteRowButtonImage = styled.img`
     height: 20px;
 `
 
-export default Row;
+export default Column;
