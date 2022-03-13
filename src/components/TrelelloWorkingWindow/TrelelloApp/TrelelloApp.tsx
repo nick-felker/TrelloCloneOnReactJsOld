@@ -4,8 +4,9 @@ import { useState } from "react";
 import styled from "styled-components";
 import TrelelloCardField from "../TrelelloCardField/TrelelloCardField";
 import CardModalWindow from "../../ModalWindows/CardModalWindow";
-import { MainAppRowArray, useAppSelector } from "../../../types";
-import { RootState } from "../../../store/appStore/store";
+import { useAppSelector } from "../../../hooks/index";
+import { columnArray } from "../../../types";
+import { RootState } from "../../../store/store";
 
 
 
@@ -17,7 +18,7 @@ const TrelelloApp = () =>{
     let [cardModalWindowTitle, setCardModalWindowTitle] = useState('');
     let [deleteCommentName, setDeleteCommentName] = useState('');
     let [descriptionContain, setDescriptionContain] = useState('');
-    let [rowTitles, setRowTitles] = useState<MainAppRowArray[]>([]);
+    let [rowTitles, setRowTitles] = useState<columnArray[]>([]);
     let [commentsList, setCommentsList] = useState<string[]>([]);
     let [modalWindowRowName, setModalWindowRowName] = useState<string>();
     let [editedCardTitle, setEditedCardTitle] = useState(''); 

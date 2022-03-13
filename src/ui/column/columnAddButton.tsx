@@ -1,6 +1,6 @@
 import styled from "styled-components"
 
-export const AddAnotherRowButton = styled.button`
+export const AddColumnButton = styled.button`
 background-color: #3d99ce;
 cursor: pointer;
 border: none;
@@ -16,4 +16,3 @@ border-radius: 4px;
     transition: 0.5s;
 }
 `
-

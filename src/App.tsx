@@ -3,8 +3,8 @@ import TrelelloApp from './components/TrelelloWorkingWindow/TrelelloApp/Trelello
 import AskingNameModalWindow from './components/AskingNameModalWindow/AskingNameModalWindow';
 import './styles/App.css'
 import { useState, useEffect } from 'react';
-import { useAppSelector, useAppDispatch } from './types';
-import { RootState } from './store/appStore/store';
+import { useAppSelector, useAppDispatch } from './hooks/index';
+import { RootState } from './store/store';
 
 
 function App() {
@@ -13,11 +13,13 @@ function App() {
   useEffect(()=>{
         setUserNameInLocalStorage(userName)
   }, [userName])
-  
-  return Boolean(userName) ? (<TrelelloApp /> ) : 
-    (
-      <AskingNameModalWindow/>
-    );
+  console.log(userName)
+ return(
+   <>
+    {userName === '' ? <AskingNameModalWindow/> : null}
+    <TrelelloApp/>
+   </>
+ )
 }
 
 export default App;

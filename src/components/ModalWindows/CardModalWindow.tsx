@@ -1,13 +1,25 @@
 
-import React, { useEffect, useState, useRef } from "react";
+import React, {useState} from "react";
 import styled from "styled-components";
 import {Form, Field} from 'react-final-form';
-import { useAppSelector, useAppDispatch, newComment, newCardName, newDescription } from "../../types";
-import { addComment, setDescription, setRenameCard} from "../../store/reducers/mainAppFunctional";
-import { RootState } from "../../store/appStore/store";
+import { useAppDispatch, useAppSelector } from "../../hooks";
+import {columnArray } from "../../types";
+import { RootState } from "../../store/store";
 
 
-const CardModalWindow:React.FC<any> = (props) =>{
+interface CardModalWindowProps{
+    modalWindowRowName:string | undefined;
+    takeDeleteCommentName:Function;
+    getEditedCardTitle:Function;
+    getDescriptionContainFromModalWindow:Function;
+    getCommentsList:Function;
+    rowTitlesArray:columnArray[];
+    activateDeleteCardButton:Function;
+    hideCardModalWindow:Function;
+    modalWindowTitle:string;
+}
+
+const CardModalWindow = (props:CardModalWindowProps) =>{
     const userName = useAppSelector((state:RootState) => state.userName.userName)
     const dispatch = useAppDispatch();
     let[editCardTitleFlag, setEditCardTitleFlag] = useState<boolean>(false);
@@ -19,21 +31,19 @@ const CardModalWindow:React.FC<any> = (props) =>{
     
    
     
-    function saveNewDescription(values:newDescription){
-            if(values.newDescription.trim().length === 0) return;
-            dispatch(setDescription([props.modalWindowTitle, values.newDescription.trim()]))
+    function saveNewDescription(name:string){
+            if(name.trim().length === 0) return;
             setEditDescriptionFlag(false);
         
     }
 
-    function AddNewCommentFunction(values:newComment){
-        alert(values.newComment)
+    function AddNewCommentFunction(message:string){
+        alert(message)
             
     }
-    function saveEditedCardTitle(values:newCardName){
-        if(values.newCardName === undefined) return
-        if(values.newCardName.trim().length === 0) return; 
-        dispatch(setRenameCard([props.modalWindowTitle, values.newCardName]));
+    function saveEditedCardTitle(newName:string){
+        if(newName === undefined) return
+        if(newName.trim().length === 0) return; 
         setEditCardTitleFlag(false);
     }
 

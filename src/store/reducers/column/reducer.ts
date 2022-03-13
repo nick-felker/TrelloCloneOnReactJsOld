@@ -1,33 +1,33 @@
 import { createSlice , PayloadAction} from "@reduxjs/toolkit";
-import { MainAppRowArray } from "../../../types";
+import { columnArray } from "../../../types";
 
 interface appData{
-    appDataArray: MainAppRowArray[]
+    appDataArray: columnArray[]
 }
 
 const initialState:appData = {
     appDataArray : [
-        {ColumnName : 'ToDo', Cards: []},
-        {ColumnName : 'In Progress', Cards: []},
-        {ColumnName : 'Testing', Cards: []}, 
-        {ColumnName : 'Done', Cards: []},
+        {id: Math.random.toString() , name : 'ToDo', cards: []},
+        {id: Math.random.toString(), name : 'In Progress', cards: []},
+        {id: Math.random.toString(), name : 'Testing', cards: []}, 
+        {id: Math.random.toString(), name : 'Done', cards: []},
     ]
 }
 
-export const columnFunction = createSlice({
+export const columnReducer = createSlice({
     name: 'column',
     initialState,
     reducers: {
         addNewColumn: (state, action: PayloadAction<string>) =>{
-            state.appDataArray.push({ColumnName:action.payload, Cards:[]});
+            state.appDataArray.push({id: Math.random().toString() ,name:action.payload, cards:[]});
         },
         deleteCurrentColumn: (state, action: PayloadAction<string>) =>{
-           state.appDataArray = state.appDataArray.filter(Column => Column.ColumnName !== action.payload)
+           state.appDataArray = state.appDataArray.filter(column => column.name !== action.payload)
         },
         setRenameColumn: (state, action: PayloadAction<string[]>) =>{
             let cloneRowTitles = state.appDataArray;
             cloneRowTitles.map(elem =>{
-            if(elem.ColumnName === action.payload[0]) { return elem.ColumnName = action.payload[1]; }
+            if(elem.name === action.payload[0]) { return elem.name = action.payload[1]; }
             })
             state.appDataArray = cloneRowTitles;
             
@@ -35,5 +35,5 @@ export const columnFunction = createSlice({
     }
 })
 
-export const {addNewColumn, setRenameColumn, deleteCurrentColumn}  = columnFunction.actions;
-export default columnFunction.reducer;
+export const {addNewColumn, setRenameColumn, deleteCurrentColumn}  = columnReducer.actions;
+export default columnReducer.reducer;

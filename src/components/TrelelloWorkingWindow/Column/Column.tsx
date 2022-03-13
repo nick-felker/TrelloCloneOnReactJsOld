@@ -1,14 +1,13 @@
 import React from "react";
 import styled from "styled-components";
 import { useState } from "react";
-import { newCardName, newColumnName } from "../../../types";
 import { Field, Form } from "react-final-form";
 import { addCard } from "../../../store/reducers/card/reducer";
 import { deleteCurrentColumn, setRenameColumn } from "../../../store/reducers/column/reducer";
-import { useAppDispatch, useAppSelector } from "../../../types";
+import { useAppDispatch, useAppSelector } from "../../../hooks/index";
 
 import Xicon from '../../../Images/X.png';
-import { RootState } from "../../../store/appStore/store";
+import { RootState } from "../../../store/store";
 
 
 
@@ -28,10 +27,10 @@ const Column = (props: Props) =>{
 
     let AddingAdditionalMenuField = (props:any) =>{
     
-    function addNewCard(values:newCardName){
-        if(values.newCardName === undefined) return
-        if(values.newCardName.trim().length === 0) return
-        dispatch(addCard(values.newCardName));
+    function addNewCard(name:string){
+        if(name === undefined) return
+        if(name.trim().length === 0) return
+        dispatch(addCard(name));
         console.log(cards)
     }
     
@@ -73,10 +72,10 @@ const Column = (props: Props) =>{
         )
     }
     
-    function renameColumn(values:newColumnName){
-            if(values.newColumnName === undefined || values.newColumnName.trim().length === 0) return;
+    function renameColumn(name:string){
+            if(name === undefined || name.trim().length === 0) return;
             setEditColumnTitleFlag(false);
-            dispatch(setRenameColumn([props.title, values.newColumnName]))
+            dispatch(setRenameColumn([props.title, name]))
     }
     function deleteColumn(title:string){
         dispatch(deleteCurrentColumn(title))

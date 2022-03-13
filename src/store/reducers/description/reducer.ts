@@ -8,7 +8,7 @@ const initialState:description = {
     description: 'Place here your card\'s desciption',
 }
 
-export const descriptionFunction = createSlice({
+export const descriptionReducer = createSlice({
     name: 'description',
     initialState, 
     reducers:{
@@ -18,5 +18,5 @@ export const descriptionFunction = createSlice({
     }
 })
 
-export const {setDescription}  = descriptionFunction.actions;
-export default descriptionFunction.reducer;
+export const {setDescription}  = descriptionReducer.actions;
+export default descriptionReducer.reducer;

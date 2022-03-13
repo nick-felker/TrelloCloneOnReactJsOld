@@ -1,29 +1,19 @@
 
 import { combineReducers, createSlice } from "@reduxjs/toolkit";
-import addUserName from '../reducers/userName/addUserName';
-import mainAppFunctional from '../reducers/mainAppFunctional';
-import columnFunction  from './column/reducer';
-import  cardFunction  from "./card/reducer";
+import addUserName from './user/reducer';
+import columnReducer  from './column/reducer';
+import cardReducer  from "./card/reducer";
+import  commentReducer  from "./comment/reducer";
+import  descriptionReducer  from "./description/reducer";
 
 
-const initialState = {
-    appDataArray : [
-        {RowName : 'ToDo', Cards: []},
-        {RowName : 'In Progress', Cards: []},
-        {RowName : 'Testing', Cards: []}, 
-        {RowName : 'Done', Cards: []},
-    ]
-}
-
-const combinedAppReducer = combineReducers({
-    columnFunction,
-    cardFunction,
-})
 
 const rootReducer = combineReducers({
     userName: addUserName,
-    mainAppFunctional: mainAppFunctional,
-    app: combinedAppReducer,
+    column: columnReducer,
+    card: cardReducer,
+    description: descriptionReducer,
+    comment: commentReducer,
 })
 
 export default rootReducer;

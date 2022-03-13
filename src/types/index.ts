@@ -1,39 +1,29 @@
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch } from "../store/appStore/store";
 
+import type { RootState } from "../store/store";
 
-import { TypedUseSelectorHook } from "react-redux";
-import type { RootState } from "../store/appStore/store";
-
-export interface MainAppRowArray {
-    ColumnName: string;
-    Cards: MainAppRowArrayCard[];
+export interface columnArray {
+    id: string;
+    name: string;
+    cards: card[];
 }
-export interface newCardName{
-    newCardName: string;
-}
-export interface newComment{
-    newComment: string;
+export interface card{
+    id: string;
+    name: string;
+    description:string;
+    comments:string[];
 }
 
-export  interface newDescription{
-    newDescription: string;
-}
-export interface newColumnName{
-    newColumnName: string;
+export interface comment{
+    cardId: string;
+    message: string;
 }
 
-
-
-export interface MainAppRowArrayCard{
-    CardName: string;
-    CardDescription:string;
-    CardComments:string[];
+export interface description{
+    cardId: string;
+    text: string;
 }
 export interface userNameInputValues{
     userName:string;
 }
 
-export const useAppDispatch = () => useDispatch<AppDispatch>();
 
-export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
