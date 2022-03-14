@@ -10,6 +10,8 @@ import Column from '../Column/Column';
 import Xicon from '../../../Images/X.png';
 import {RootState} from '../../../store/store';
 import {addCard} from '../../../store/reducers/card/reducer'
+import {columnSelector} from './../../../store/reducers/column/index';
+import {column} from './../../../types/index';
 
 
 interface Props{
@@ -18,7 +20,6 @@ interface Props{
     takeDeleteCommentName: string;
     takeDescriptionContainFromTrelelloApp: string;
     commentsList: string[];
-    rowTitlesArrayToTrelelloApp: Function;
     changeActivateDeleteButtonFlag: Function;
     activateDeleteCardButtonTitle: string;
     activateDeleteCardButtonFlag: boolean;
@@ -27,31 +28,32 @@ interface Props{
 
 const TrelelloCardField = (props:Props) =>{
     
-    // const columns = useAppSelector((state: RootState) => state.app.columnFunction.appDataArray);
-    // const cards = useAppSelector((state:RootState) => state.app.cardFunction.cards); 
+    const columns = useAppSelector(columnSelector.columns);
     
     
     const dispatch = useAppDispatch();
-    let [addAnotherRowFlag, setAddAnotherRowFlag] = useState(false);
+    let [addAnotherColumnFlag, setAddAnotherColumnFlag] = useState(false);
 
          
-
+    interface addColumnInterface{
+        columnName: string;
+    }
 
     
-    const createColumn = (name:string) =>{
-        if(name === undefined) return;
-        if(name.trim().length === 0 ) return;
-        dispatch(addNewColumn(name));
-        setAddAnotherRowFlag(false);   
+    const createColumn = (values:addColumnInterface) =>{
+        if(values.columnName === undefined) return;
+        if(values.columnName.trim().length === 0) return;
+        dispatch(addNewColumn(values.columnName));
+        setAddAnotherColumnFlag(false);   
     }
     
     
     return(
         
         <Wrapper>
-            {/* {columns.map((title:Columntitle, index:string)=>{return <Column key={`${title}-${index}`}   getClickedCardTitle={props.getClickedCardTitle} title={title.ColumnName}/>})} */}
-            {addAnotherRowFlag === false ? <AddColumnButton onClick={()=>{setAddAnotherRowFlag(!addAnotherRowFlag)}}>Add another list</AddColumnButton> 
-            : <AddAnotherRowWrapper>
+            {columns.map((column:column)=>{return <Column id={column.id} key={column.id} getClickedCardTitle={props.getClickedCardTitle} title={column.name}/>})}
+            {addAnotherColumnFlag === false ? <AddColumnButton onClick={()=>{setAddAnotherColumnFlag(!addAnotherColumnFlag)}}>Add another list</AddColumnButton> 
+            : <AddAnotherColumnWrapper>
                 <Form
                     onSubmit={createColumn}
                     render={({handleSubmit, values}) =>(
@@ -63,7 +65,7 @@ const TrelelloCardField = (props:Props) =>{
                         >
                             {props =>(
                                 <>
-                                    <AddAnotherRowWrapperInput
+                                    <AddAnotherColumnWrapperInput
                                         placeholder="Enter list title"
                                         value={props.input.value}
                                         onChange={props.input.onChange}
@@ -74,10 +76,10 @@ const TrelelloCardField = (props:Props) =>{
                                 </>
                             )}
                         </Field>
-                        <AddAnotherRowWrapperAddButton onClick={handleSubmit}>Add list</AddAnotherRowWrapperAddButton>
-                        <AddAnotherRowWrapperCancelButton onClick={()=>{setAddAnotherRowFlag(!addAnotherRowFlag)}}>
-                            <AddAnotherRowWrapperCancelButtonImg src={Xicon}/>
-                        </AddAnotherRowWrapperCancelButton>
+                        <AddAnotherColumnWrapperAddButton onClick={handleSubmit}>Add list</AddAnotherColumnWrapperAddButton>
+                        <AddAnotherColumnWrapperCancelButton onClick={()=>{setAddAnotherColumnFlag(!addAnotherColumnFlag)}}>
+                            <AddAnotherColumnWrapperCancelButtonImg src={Xicon}/>
+                        </AddAnotherColumnWrapperCancelButton>
                         </form>
                     )}
                 >
@@ -86,7 +88,7 @@ const TrelelloCardField = (props:Props) =>{
                 
                 
                     
-            </AddAnotherRowWrapper>
+            </AddAnotherColumnWrapper>
             }
             </Wrapper>
         
@@ -100,13 +102,14 @@ const Wrapper = styled.div`
     margin-top: 10px;
     justify-content: flex-start;
     margin-left: 3%;
+    
 `
-const AddAnotherRowWrapper = styled.div`
+const AddAnotherColumnWrapper = styled.div`
     padding: 5px 0px 5px 10px;
     width: 200px;
     background-color: #ebecf0;
 `
-const AddAnotherRowWrapperInput = styled.input`
+const AddAnotherColumnWrapperInput = styled.input`
     width: 180px;
     padding: 4px 0px 4px 7px;
     border: 2px solid #0079bf;
@@ -125,7 +128,7 @@ const AddAnotherRowWrapperInput = styled.input`
     outline: none;
     margin-bottom: 10px;
 `
-const AddAnotherRowWrapperAddButton = styled.button`
+const AddAnotherColumnWrapperAddButton = styled.button`
     background-color: #0079bf;
     padding: 5px 10px;
     cursor: pointer;
@@ -136,7 +139,7 @@ const AddAnotherRowWrapperAddButton = styled.button`
     border-radius: 3px;
 `
 
-const AddAnotherRowWrapperCancelButton = styled.button`
+const AddAnotherColumnWrapperCancelButton = styled.button`
     padding: 4px 4px 2px 4px;
     border: none;
     cursor: pointer;
@@ -147,7 +150,7 @@ const AddAnotherRowWrapperCancelButton = styled.button`
         transition: 0.5s;
     }
 `
-const AddAnotherRowWrapperCancelButtonImg = styled.img`
+const AddAnotherColumnWrapperCancelButtonImg = styled.img`
     width: 15px;
     opacity: 0.7;
     height: 15px;

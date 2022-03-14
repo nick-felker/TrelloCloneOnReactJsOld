@@ -1,13 +1,11 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
-
 import styled from "styled-components";
 import TrelelloCardField from "../TrelelloCardField/TrelelloCardField";
 import CardModalWindow from "../../ModalWindows/CardModalWindow";
 import { useAppSelector } from "../../../hooks/index";
-import { columnArray } from "../../../types";
-import { RootState } from "../../../store/store";
-
+import { column } from "../../../types";
+import { userSelector } from "../../../store/reducers/user";
 
 
 
@@ -18,19 +16,20 @@ const TrelelloApp = () =>{
     let [cardModalWindowTitle, setCardModalWindowTitle] = useState('');
     let [deleteCommentName, setDeleteCommentName] = useState('');
     let [descriptionContain, setDescriptionContain] = useState('');
-    let [rowTitles, setRowTitles] = useState<columnArray[]>([]);
+    let [cardId, setCardId] = useState<string>();
     let [commentsList, setCommentsList] = useState<string[]>([]);
     let [modalWindowRowName, setModalWindowRowName] = useState<string>();
     let [editedCardTitle, setEditedCardTitle] = useState(''); 
-    const userName = useAppSelector((state:RootState) => state.userName.userName)
+    const userName = useAppSelector(userSelector.userName);
     
 
     useEffect(()=>{
         setDeleteCommentName('')
     },[deleteCommentName])
     
-    function getClickedCardTitleAndSetModalFlagTitle(title:string, flag:boolean, rowTitle:string){
+    function getClickedCardTitleAndSetModalFlagTitle(title:string, flag:boolean, rowTitle:string, cardId:string){
        setCardModalWindowTitle(title);
+       setCardId(cardId);
        setCardModalWindowFlag(flag);
        setModalWindowRowName(rowTitle);
 
@@ -49,10 +48,10 @@ const TrelelloApp = () =>{
             <CardModalWindow
                 modalWindowRowName={modalWindowRowName}
                 takeDeleteCommentName={setDeleteCommentName}
-                getEditedCardTitle={setEditedCardTitle}
+                getEditedCardTitle={setCardModalWindowTitle}
+                cardId = {cardId}
                 getDescriptionContainFromModalWindow={setDescriptionContain}
                 getCommentsList={setCommentsList}
-                rowTitlesArray={rowTitles}
                 activateDeleteCardButton={activateDeleteCardButton}
                 hideCardModalWindow={setCardModalWindowFlag}
                 modalWindowTitle={cardModalWindowTitle}
@@ -73,7 +72,6 @@ const TrelelloApp = () =>{
                 takeDeleteCommentName={deleteCommentName}
                 takeDescriptionContainFromTrelelloApp={descriptionContain}
                 commentsList={commentsList}
-                rowTitlesArrayToTrelelloApp={setRowTitles}
                 changeActivateDeleteButtonFlag={activateDeleteCardButton}
                 activateDeleteCardButtonTitle={cardModalWindowTitle}
                 activateDeleteCardButtonFlag={deleteCardFlag}
@@ -105,9 +103,9 @@ const UserNameInMainHeader = styled.p`
     font-size: 14px;
 `
 const MainBody = styled.div`
-    background-color: white;
     padding-top: 60px;
 `
-const Wrapper = styled.div``    
+const Wrapper = styled.div`  
+`    
 
 export default TrelelloApp;

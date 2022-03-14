@@ -14,20 +14,19 @@ export const cardReducer = createSlice({
     name: 'card',
     initialState,
     reducers:{
-        addCard: (state, action: PayloadAction<string>) =>{
+        addCard: (state, action: PayloadAction<string[]>) =>{
            let newCard = {
                id: Math.random().toString(),
-               name: action.payload,
-               description: '...',
-               comments: [],
+               name: action.payload[0],
+               columnId: action.payload[1],
            }
            state.cards.push(newCard);
         }, 
         deleteCard: (state, action: PayloadAction<string>) =>{
-           state.cards = state.cards.filter(card => card.name !== action.payload);
+           state.cards = state.cards.filter(card => card.id !== action.payload);
         },
-        setRenameCard: (state, action: PayloadAction<string>) =>{
-           state.cards.map(card => card.name === action.payload ? action.payload : card); 
+        setRenameCard: (state, action: PayloadAction<string[]>) =>{
+           state.cards.map(card => card.id === action.payload[0] ? card.name = action.payload[1] : card); 
         }
     }
 })

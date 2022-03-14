@@ -5,6 +5,7 @@ import './styles/App.css'
 import { useState, useEffect } from 'react';
 import { useAppSelector, useAppDispatch } from './hooks/index';
 import { RootState } from './store/store';
+import styled from 'styled-components';
 
 
 function App() {
@@ -13,13 +14,14 @@ function App() {
   useEffect(()=>{
         setUserNameInLocalStorage(userName)
   }, [userName])
-  console.log(userName)
  return(
-   <>
+   <Wrapper>
     {userName === '' ? <AskingNameModalWindow/> : null}
     <TrelelloApp/>
-   </>
+   </Wrapper>
  )
 }
 
+const Wrapper = styled.div`
+`
 export default App;

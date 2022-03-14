@@ -1,19 +1,27 @@
 import { createSlice , PayloadAction} from "@reduxjs/toolkit";
+import {description} from './../../../types/index';
 
-interface description{
-    description:string;
+
+interface descriptions{
+    descriptions: description[];
 }
 
-const initialState:description = {
-    description: 'Place here your card\'s desciption',
+const initialState:descriptions = {
+    descriptions: []
 }
 
 export const descriptionReducer = createSlice({
     name: 'description',
     initialState, 
     reducers:{
-        setDescription: (state, action: PayloadAction<string>) =>{
-           state.description = action.payload;
+        setDescription: (state, action: PayloadAction<string[]>) =>{
+           const newDescription = {
+               text: action.payload[0],
+               cardId: action.payload[1],
+           }
+           state.descriptions = state.descriptions.filter(description=> description.cardId !== action.payload[1])
+           state.descriptions.push(newDescription);
+           
         },
     }
 })

@@ -1,16 +1,16 @@
 import { createSlice , PayloadAction} from "@reduxjs/toolkit";
-import { columnArray } from "../../../types";
+import { column } from "../../../types";
 
 interface appData{
-    appDataArray: columnArray[]
+    columns: column[]
 }
 
 const initialState:appData = {
-    appDataArray : [
-        {id: Math.random.toString() , name : 'ToDo', cards: []},
-        {id: Math.random.toString(), name : 'In Progress', cards: []},
-        {id: Math.random.toString(), name : 'Testing', cards: []}, 
-        {id: Math.random.toString(), name : 'Done', cards: []},
+    columns : [
+        {id: Math.random().toString(), name : 'ToDo'},
+        {id: Math.random().toString(), name : 'In Progress'},
+        {id: Math.random().toString(), name : 'Testing'}, 
+        {id: Math.random().toString(), name : 'Done'},
     ]
 }
 
@@ -19,17 +19,13 @@ export const columnReducer = createSlice({
     initialState,
     reducers: {
         addNewColumn: (state, action: PayloadAction<string>) =>{
-            state.appDataArray.push({id: Math.random().toString() ,name:action.payload, cards:[]});
+            state.columns.push({id: Math.random().toString(), name: action.payload});
         },
         deleteCurrentColumn: (state, action: PayloadAction<string>) =>{
-           state.appDataArray = state.appDataArray.filter(column => column.name !== action.payload)
+           state.columns = state.columns.filter(column => column.name !== action.payload)
         },
         setRenameColumn: (state, action: PayloadAction<string[]>) =>{
-            let cloneRowTitles = state.appDataArray;
-            cloneRowTitles.map(elem =>{
-            if(elem.name === action.payload[0]) { return elem.name = action.payload[1]; }
-            })
-            state.appDataArray = cloneRowTitles;
+           state.columns.map(column => column.id === action.payload[0] ? column.name = action.payload[1] : null);
             
         },
     }

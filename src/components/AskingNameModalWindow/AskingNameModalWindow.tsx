@@ -5,9 +5,6 @@ import { RootState } from "../../store/store";
 import { Form, Field } from 'react-final-form';
 import {addUserName} from '../../store/reducers/user/reducer';
 
-
-
-
 const AskingNameModalWindow = () =>{
     const dispatch = useAppDispatch();
 
