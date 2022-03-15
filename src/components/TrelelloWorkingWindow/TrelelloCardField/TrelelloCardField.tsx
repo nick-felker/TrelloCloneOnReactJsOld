@@ -1,25 +1,19 @@
-import React from "react";
 import styled from "styled-components";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {AddColumnButton} from "../../../ui/column/columnAddButton";
 import {Form, Field} from 'react-final-form';
-import { useAppSelector, useAppDispatch } from "../../../hooks/index";
+import { useAppSelector, useAppDispatch } from "../../../hooks";
 import { addNewColumn } from "../../../store/reducers/column/reducer";
-import { deleteCard } from "../../../store/reducers/card/reducer";
 import Column from '../Column/Column';
 import Xicon from '../../../Images/X.png';
-import {RootState} from '../../../store/store';
-import {addCard} from '../../../store/reducers/card/reducer'
-import {columnSelector} from './../../../store/reducers/column/index';
-import {column} from './../../../types/index';
+import {columnSelector} from './../../../store/reducers/column';
+import {column} from './../../../types';
 
 
 interface Props{
     setCardModalWindowTitleFunction: Function;
     takeRenameCardTitle: string;
     takeDeleteCommentName: string;
-    takeDescriptionContainFromTrelelloApp: string;
-    commentsList: string[];
     changeActivateDeleteButtonFlag: Function;
     activateDeleteCardButtonTitle: string;
     activateDeleteCardButtonFlag: boolean;
@@ -29,10 +23,8 @@ interface Props{
 const TrelelloCardField = (props:Props) =>{
     
     const columns = useAppSelector(columnSelector.columns);
-    
-    
     const dispatch = useAppDispatch();
-    let [addAnotherColumnFlag, setAddAnotherColumnFlag] = useState(false);
+    const [addAnotherColumnFlag, setAddAnotherColumnFlag] = useState(false);
 
          
     interface addColumnInterface{
@@ -41,15 +33,13 @@ const TrelelloCardField = (props:Props) =>{
 
     
     const createColumn = (values:addColumnInterface) =>{
-        if(values.columnName === undefined) return;
         if(values.columnName.trim().length === 0) return;
         dispatch(addNewColumn(values.columnName));
         setAddAnotherColumnFlag(false);   
     }
     
-    
+
     return(
-        
         <Wrapper>
             {columns.map((column:column)=>{return <Column id={column.id} key={column.id} getClickedCardTitle={props.getClickedCardTitle} title={column.name}/>})}
             {addAnotherColumnFlag === false ? <AddColumnButton onClick={()=>{setAddAnotherColumnFlag(!addAnotherColumnFlag)}}>Add another list</AddColumnButton> 
@@ -83,12 +73,8 @@ const TrelelloCardField = (props:Props) =>{
                         </form>
                     )}
                 >
-                    
-                </Form>
-                
-                
-                    
-            </AddAnotherColumnWrapper>
+                </Form>         
+             </AddAnotherColumnWrapper>
             }
             </Wrapper>
         

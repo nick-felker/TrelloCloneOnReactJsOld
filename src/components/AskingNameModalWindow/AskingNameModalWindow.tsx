@@ -1,24 +1,22 @@
-import React from "react";
 import styled from "styled-components";
-import { useAppDispatch, useAppSelector } from "../../hooks/index";
-import { RootState } from "../../store/store";
+import { useAppDispatch } from "../../hooks";
 import { Form, Field } from 'react-final-form';
 import {addUserName} from '../../store/reducers/user/reducer';
+import UserNameInput from "../../ui/user/register/registerNameInput";
+import SubmitUserNameButton from "../../ui/user/register/registerSubmitButton";
+
 
 const AskingNameModalWindow = () =>{
     const dispatch = useAppDispatch();
-
     interface userNameInputValues{
         userName:string;
     }
 
     const onSubmit = (values:userNameInputValues) => {
-        let pureValue = values.userName.trim();
-        if(values.userName === undefined && pureValue.length === 0) return 
-        else{
-            dispatch(addUserName(pureValue))
-        }
+        if(!values.userName?.trim()) return 
+            dispatch(addUserName(values.userName))
     }
+
     return(
         <WindowOverlay>
         <PopUpWrapper>
@@ -35,7 +33,7 @@ const AskingNameModalWindow = () =>{
                             >
                                 {props =>(
                                     <>
-                                        <Input
+                                        <UserNameInput
                                             name={props.input.name}
                                             value={props.input.value}
                                             onChange={props.input.onChange}
@@ -44,8 +42,7 @@ const AskingNameModalWindow = () =>{
                                     </>
                                 )}
                             </Field>    
-                            
-                            <Button type="submit">Submit</Button>
+                            <SubmitUserNameButton/>
                             <Footnote>You will be called - <UserNameSpan>{values.userName} {values.userName === undefined ? null : '😎'}</UserNameSpan></Footnote>
                         </Wrapper>
                     </form>
@@ -94,43 +91,6 @@ const BlackLayer = styled.div`
     left: 0;
     z-index 10;
 `
-const Button = styled.button`
-    outline: none;
-    margin-top: 40px;
-    cursor: pointer;
-    background-color: #f7e24b;
-    border: none;
-    font-size: 20px;
-    text-transform: uppercase;
-    color: white;
-    padding: 15px 20px;
-    border-radius: 5px;
-`
-const Input = styled.input`
-    padding: 20px 0px;
-    outline: none;
-    font-size: 20px;
-    width: 320px;
-    text-align: center;
-    ::placeholder{
-        font-size: 15px;
-        text-transform: uppercase;
-    }
-    :hover{
-        ::placeholder{
-            
-            color: white;
-            transition: 0.5s;
-        }
-    }
-    :focus{
-        ::placeholder{
-            color: white;
-        }
-    }
-`
-
-
 const Footnote = styled.p`
     font-size: 17px;
     text-transform: uppercase;

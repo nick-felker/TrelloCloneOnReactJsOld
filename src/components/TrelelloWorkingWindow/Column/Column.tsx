@@ -1,14 +1,12 @@
-import React from "react";
 import styled from "styled-components";
 import { useState } from "react";
 import { Field, Form } from "react-final-form";
 import { addCard } from "../../../store/reducers/card/reducer";
 import { deleteCurrentColumn, setRenameColumn } from "../../../store/reducers/column/reducer";
-import { useAppDispatch, useAppSelector } from "../../../hooks/index";
+import { useAppDispatch, useAppSelector } from "../../../hooks";
 import { card } from "../../../types";
 import Xicon from '../../../Images/X.png';
-import { RootState } from "../../../store/store";
-import {cardSelector} from '../../../store/reducers/card/index';
+import {cardSelector} from '../../../store/reducers/card';
 
 
 
@@ -23,25 +21,23 @@ interface columnProps{
 const Column = (props: columnProps) =>{
     const cards = useAppSelector(cardSelector.cards)
     const dispatch = useAppDispatch();
-    let [showAddingMenuFlag, setShowAddingMenuFlag] = useState(true);
-    let [editColumnTitleFlag, setEditColumnTitleFlag] = useState(false);
+    const [showAddingMenuFlag, setShowAddingMenuFlag] = useState(true);
+    const [editColumnTitleFlag, setEditColumnTitleFlag] = useState(false);
 
     interface AddingAdditionalMenuFieldProps{
         props: columnProps;
     }
 
-    let AddingAdditionalMenuField = (props:AddingAdditionalMenuFieldProps) =>{
+    const AddingAdditionalMenuField = (props:AddingAdditionalMenuFieldProps) =>{
     
     interface addNewCardFormProps{
         newCardName:string;
     }
 
     function addNewCard(values:addNewCardFormProps){
-        if(values.newCardName === undefined) return
-        if(values.newCardName.trim().length === 0) return
+        if(!values.newCardName?.trim()) return
         dispatch(addCard([values.newCardName, props.props.id]));
     }
-    
         return(
             <Form
                 onSubmit={addNewCard}
@@ -85,7 +81,7 @@ const Column = (props: columnProps) =>{
     }
 
     function renameColumn(values:renameColumnFormProps){
-            if(values.newColumnName === undefined || values.newColumnName.trim().length === 0) return;
+            if(!values.newColumnName?.trim()) return;
             setEditColumnTitleFlag(false);
             dispatch(setRenameColumn([props.id, values.newColumnName]))
     }

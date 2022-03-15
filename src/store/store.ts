@@ -1,4 +1,4 @@
-import {configureStore, combineReducers} from '@reduxjs/toolkit';
+import {configureStore} from '@reduxjs/toolkit';
 import  {persistStore,
          persistReducer,
          FLUSH,
@@ -16,7 +16,6 @@ const persistConfig = {
     key: 'root',
     storage,
 };
-
 
 export const store  = configureStore({
     reducer: persistReducer(persistConfig, rootReducer),

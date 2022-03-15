@@ -1,6 +1,4 @@
 
-import type { RootState } from "../store/store";
-
 export interface column{
     id: string;
     name: string;
@@ -10,8 +8,6 @@ export interface card{
     columnId:string;
     name: string;
 }
-
-
 
 export interface comment{
     cardId: string;

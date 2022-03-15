@@ -1,9 +1,8 @@
 
-import React, {useEffect, useState} from "react";
+import {useEffect, useState} from "react";
 import styled from "styled-components";
 import {Form, Field} from 'react-final-form';
 import { useAppDispatch, useAppSelector } from "../../hooks";
-import { RootState } from "../../store/store";
 import { deleteCard , setRenameCard} from "../../store/reducers/card/reducer";
 import { addComment, deleteComment } from "../../store/reducers/comment/reducer";
 import {userSelector} from './../../store/reducers/user/index';
@@ -17,8 +16,6 @@ interface CardModalWindowProps{
     modalWindowRowName:string | undefined;
     takeDeleteCommentName:Function;
     getEditedCardTitle:Function;
-    getDescriptionContainFromModalWindow:Function;
-    getCommentsList:Function;
     cardId: string | undefined;
     activateDeleteCardButton:Function;
     hideCardModalWindow:Function;
@@ -38,7 +35,7 @@ const CardModalWindow = (props:CardModalWindowProps) =>{
    }
     
    useEffect(()=>{
-       descriptions.map((description:description)=>{
+       descriptions.map((description:description)=> {
            if(description.cardId === props.cardId){
                setDescriptionContain(description.text);
            }
@@ -46,11 +43,10 @@ const CardModalWindow = (props:CardModalWindowProps) =>{
    },[descriptions])
 
     function saveNewDescription(values:setDescriptionFormProps){
-            if(values.description.trim().length === 0) return;
-            if(props.cardId === undefined) return;
-            dispatch(setDescription([values.description, props.cardId]));
-            setEditDescriptionFlag(false);
-        
+        if(!values.description?.trim()) return;
+        if(props.cardId === undefined) return;
+        dispatch(setDescription([values.description, props.cardId]));
+        setEditDescriptionFlag(false);
     }
     
     interface addCommentFormProps{
@@ -59,6 +55,7 @@ const CardModalWindow = (props:CardModalWindowProps) =>{
 
     function addNewCommentFunction(values:addCommentFormProps){
         if(props.cardId === undefined) return;
+        if(!values.message?.trim()) return;
         dispatch(addComment([props.cardId, values.message])) 
     }
     function deleteCommentFunction(commentId:string){
@@ -70,8 +67,7 @@ const CardModalWindow = (props:CardModalWindowProps) =>{
     }
 
     function saveEditedCardTitle(values:newCardNameFormProps){
-        if(values.newCardName === undefined) return
-        if(values.newCardName.trim().length === 0) return;
+        if(!values.newCardName?.trim()) return;
         if(props.cardId === undefined) return;
         dispatch(setRenameCard([props.cardId, values.newCardName]))
         props.getEditedCardTitle(values.newCardName)
@@ -195,10 +191,10 @@ const CardModalWindow = (props:CardModalWindowProps) =>{
                         </Form>
                         {commentsArray.map((comment:comment)=>{
                             if(comment.cardId !== props.cardId) return;
-                            return(<>
+                            return(<div key={comment.id}>
                                     <CommentOwner>{userName}</CommentOwner>
-                                    <NewComment>{comment.message}<DeleteCommentButton key={commentsArray.indexOf(comment, 0)} onClick={()=>{deleteCommentFunction(comment.id)}}>Del</DeleteCommentButton></NewComment>
-                            </>)
+                                    <NewComment >{comment.message}<DeleteCommentButton onClick={()=>{deleteCommentFunction(comment.id)}}>Del</DeleteCommentButton></NewComment>  
+                            </div>)
                          })}
                          
                     </CommentsWrapper>
