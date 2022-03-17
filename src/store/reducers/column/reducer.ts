@@ -1,17 +1,22 @@
 import { createSlice , PayloadAction} from "@reduxjs/toolkit";
-import { column } from "../../../types";
+import { ColumnType } from "../../../types";
 
-interface appData{
-    columns: column[]
+interface Columns{
+    columns: ColumnType[]
 }
 
-const initialState:appData = {
+const initialState:Columns = {
     columns : [
         {id: Math.random().toString(), name : 'ToDo'},
         {id: Math.random().toString(), name : 'In Progress'},
         {id: Math.random().toString(), name : 'Testing'}, 
         {id: Math.random().toString(), name : 'Done'},
     ]
+}
+
+interface ChangeColumnType{
+    columnId: string;
+    newColumnName: string;
 }
 
 export const columnReducer = createSlice({
@@ -24,12 +29,12 @@ export const columnReducer = createSlice({
         deleteCurrentColumn: (state, action: PayloadAction<string>) =>{
            state.columns = state.columns.filter(column => column.name !== action.payload)
         },
-        setRenameColumn: (state, action: PayloadAction<string[]>) =>{
-           state.columns.map(column => column.id === action.payload[0] ? column.name = action.payload[1] : null);
+        changeColumn: (state, {payload}: PayloadAction<ChangeColumnType>) =>{
+           state.columns.map(column => column.id === payload.columnId ? column.name = payload.newColumnName : null);
             
         },
     }
 })
 
-export const {addNewColumn, setRenameColumn, deleteCurrentColumn}  = columnReducer.actions;
+export const {addNewColumn, changeColumn, deleteCurrentColumn}  = columnReducer.actions;
 export default columnReducer.reducer;

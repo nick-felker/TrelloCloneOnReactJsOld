@@ -1,2 +1,2 @@
-export {default} from './reducer';
-export * as cardSelector from './selector';
+export {addCard, deleteCard, changeCard} from './reducer';
+export { selectCardsByColumnId, selectDescriptionByCardId} from './selector';

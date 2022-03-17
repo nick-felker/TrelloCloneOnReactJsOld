@@ -1,2 +1,3 @@
 export {default} from './reducer';
-export * as commentSelector from './selector';
+export {selectCommentsByCardId} from './selector';
+export {addComment, deleteComment} from './reducer';

@@ -1,28 +1,30 @@
 import styled from "styled-components";
 import { useState } from "react";
 import { Field, Form } from "react-final-form";
-import { addCard } from "../../../store/reducers/card/reducer";
-import { deleteCurrentColumn, setRenameColumn } from "../../../store/reducers/column/reducer";
+import { addCard, 
+         deleteCurrentColumn, 
+         changeColumn,
+         selectCardsByColumnId,
+        } from "../../../store";
 import { useAppDispatch, useAppSelector } from "../../../hooks";
-import { card } from "../../../types";
+import { CardType } from "../../../types";
 import Xicon from '../../../Images/X.png';
-import {cardSelector} from '../../../store/reducers/card';
 
 
 
 interface columnProps{
     key: string;
     id: string;
-    getClickedCardTitle: Function;
+    getClickedCardTitle: (title:string, flag:boolean, columnTitle:string, cardId:string) => void;
     title: string;
 
 }
 
 const Column = (props: columnProps) =>{
-    const cards = useAppSelector(cardSelector.cards)
     const dispatch = useAppDispatch();
     const [showAddingMenuFlag, setShowAddingMenuFlag] = useState(true);
     const [editColumnTitleFlag, setEditColumnTitleFlag] = useState(false);
+    const cards:CardType[] = useAppSelector((state) => selectCardsByColumnId(state, props.id));
 
     interface AddingAdditionalMenuFieldProps{
         props: columnProps;
@@ -30,13 +32,13 @@ const Column = (props: columnProps) =>{
 
     const AddingAdditionalMenuField = (props:AddingAdditionalMenuFieldProps) =>{
     
-    interface addNewCardFormProps{
+    interface AddNewCardFormProps{
         newCardName:string;
     }
 
-    function addNewCard(values:addNewCardFormProps){
+    function addNewCard(values:AddNewCardFormProps){
         if(!values.newCardName?.trim()) return
-        dispatch(addCard([values.newCardName, props.props.id]));
+        dispatch(addCard({name: values.newCardName, columnId:props.props.id}));
     }
         return(
             <Form
@@ -76,14 +78,14 @@ const Column = (props: columnProps) =>{
         )
     }
     
-    interface renameColumnFormProps{
+    interface RenameColumnFormProps{
         newColumnName: string;
     }
 
-    function renameColumn(values:renameColumnFormProps){
+    function renameColumn(values:RenameColumnFormProps){
             if(!values.newColumnName?.trim()) return;
             setEditColumnTitleFlag(false);
-            dispatch(setRenameColumn([props.id, values.newColumnName]))
+            dispatch(changeColumn({columnId: props.id, newColumnName:values.newColumnName}))
     }
 
     function deleteColumn(title:string){
@@ -131,7 +133,7 @@ const Column = (props: columnProps) =>{
                 }
                 
                 </TitleWrapper>
-                {cards.map((card:card)=>{if(card.columnId === props.id){return <Card key={cards.indexOf(card, 0)} onClick={()=>props.getClickedCardTitle(card.name, true, props.title, card.id)}>{card.name}</Card>}})}
+                {cards.map((card:CardType)=>{return <Card key={card.id} onClick={()=>props.getClickedCardTitle(card.name, true, props.title, card.id)}>{card.name}</Card>})}
                 
             
                 

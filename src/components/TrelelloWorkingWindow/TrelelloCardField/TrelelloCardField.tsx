@@ -1,38 +1,32 @@
 import styled from "styled-components";
 import { useState } from "react";
-import {AddColumnButton} from "../../../ui/column/columnAddButton";
 import {Form, Field} from 'react-final-form';
 import { useAppSelector, useAppDispatch } from "../../../hooks";
-import { addNewColumn } from "../../../store/reducers/column/reducer";
+import { addNewColumn, columnsSelector, } from "../../../store";
 import Column from '../Column/Column';
 import Xicon from '../../../Images/X.png';
-import {columnSelector} from './../../../store/reducers/column';
-import {column} from './../../../types';
-
+import {ColumnType} from './../../../types';
 
 interface Props{
-    setCardModalWindowTitleFunction: Function;
-    takeRenameCardTitle: string;
-    takeDeleteCommentName: string;
-    changeActivateDeleteButtonFlag: Function;
-    activateDeleteCardButtonTitle: string;
+    setCardModalWindowTitleFunction: (title:string)=> void;
+    changeActivateDeleteButtonFlag: (value:boolean) => void;
     activateDeleteCardButtonFlag: boolean;
-    getClickedCardTitle: Function;
+    getClickedCardTitle: (title:string, flag:boolean, columnTitle:string, cardId:string) => void;
 }
 
 const TrelelloCardField = (props:Props) =>{
     
-    const columns = useAppSelector(columnSelector.columns);
+    const columns = useAppSelector(columnsSelector);
     const dispatch = useAppDispatch();
     const [addAnotherColumnFlag, setAddAnotherColumnFlag] = useState(false);
 
          
-    interface addColumnInterface{
+    interface AddColumnInterface{
         columnName: string;
     }
 
     
-    const createColumn = (values:addColumnInterface) =>{
+    const createColumn = (values:AddColumnInterface) =>{
         if(values.columnName.trim().length === 0) return;
         dispatch(addNewColumn(values.columnName));
         setAddAnotherColumnFlag(false);   
@@ -41,7 +35,7 @@ const TrelelloCardField = (props:Props) =>{
 
     return(
         <Wrapper>
-            {columns.map((column:column)=>{return <Column id={column.id} key={column.id} getClickedCardTitle={props.getClickedCardTitle} title={column.name}/>})}
+            {columns.map((column:ColumnType)=>{return <Column id={column.id} key={column.id} getClickedCardTitle={props.getClickedCardTitle} title={column.name}/>})}
             {addAnotherColumnFlag === false ? <AddColumnButton onClick={()=>{setAddAnotherColumnFlag(!addAnotherColumnFlag)}}>Add another list</AddColumnButton> 
             : <AddAnotherColumnWrapper>
                 <Form
@@ -94,6 +88,22 @@ const AddAnotherColumnWrapper = styled.div`
     padding: 5px 0px 5px 10px;
     width: 200px;
     background-color: #ebecf0;
+`
+const AddColumnButton = styled.button`
+    background-color: #3d99ce;
+    cursor: pointer;
+    border: none;
+    text-align: center;
+    min-width: 200px;
+    color: white;
+    font-size: 19px;
+    padding: 10px 0px;
+    border-radius: 4px;
+    :hover{
+        background-color: #29688d;
+        color: white;
+        transition: 0.5s;
+}
 `
 const AddAnotherColumnWrapperInput = styled.input`
     width: 180px;

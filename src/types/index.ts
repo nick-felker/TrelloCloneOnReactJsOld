@@ -1,23 +1,21 @@
 
-export interface column{
+export interface ColumnType{
     id: string;
     name: string;
 }
-export interface card{
+export interface CardType{
     id: string;
     columnId:string;
     name: string;
+    description?: string;
 }
 
-export interface comment{
+export interface CommentType{
     cardId: string;
     message: string;
     id: string;
 }
 
-export interface description{
-    cardId: string;
-    text: string;
+export interface UserType{
+    userName:string;
 }
-
-

@@ -1,9 +1,8 @@
 import styled from "styled-components";
 import { useAppDispatch } from "../../hooks";
 import { Form, Field } from 'react-final-form';
-import {addUserName} from '../../store/reducers/user/reducer';
-import UserNameInput from "../../ui/user/register/registerNameInput";
-import SubmitUserNameButton from "../../ui/user/register/registerSubmitButton";
+import {addUserName} from '../../store';
+import {Button, Input} from './../../ui'
 
 
 const AskingNameModalWindow = () =>{
@@ -14,7 +13,7 @@ const AskingNameModalWindow = () =>{
 
     const onSubmit = (values:userNameInputValues) => {
         if(!values.userName?.trim()) return 
-            dispatch(addUserName(values.userName))
+        dispatch(addUserName(values.userName))
     }
 
     return(
@@ -30,19 +29,9 @@ const AskingNameModalWindow = () =>{
                             <Label>Your name in app</Label>
                             <Field
                                 name='userName'
-                            >
-                                {props =>(
-                                    <>
-                                        <UserNameInput
-                                            name={props.input.name}
-                                            value={props.input.value}
-                                            onChange={props.input.onChange}
-                                            autoComplete='off'
-                                        />
-                                    </>
-                                )}
-                            </Field>    
-                            <SubmitUserNameButton/>
+                                component={Input.default}
+                            />   
+                            <Button.default text='submit'/>
                             <Footnote>You will be called - <UserNameSpan>{values.userName} {values.userName === undefined ? null : '😎'}</UserNameSpan></Footnote>
                         </Wrapper>
                     </form>
@@ -58,6 +47,29 @@ const AskingNameModalWindow = () =>{
 
 const UserNameSpan = styled.span`
     font-weight: bold;
+`
+const Root = styled.input`
+    padding: 20px 0px;
+    outline: none;
+    font-size: 20px;
+    width: 320px;
+    text-align: center;
+    ::placeholder{
+        font-size: 15px;
+        text-transform: uppercase;
+    }
+    :hover{
+        ::placeholder{
+            
+            color: white;
+            transition: 0.5s;
+        }
+    }
+    :focus{
+        ::placeholder{
+            color: white;
+        }
+    }
 `
 const WindowOverlay = styled.div`
     display: flex;

@@ -3,7 +3,7 @@ import styled from "styled-components";
 import TrelelloCardField from "../TrelelloCardField/TrelelloCardField";
 import CardModalWindow from "../../ModalWindows/CardModalWindow";
 import { useAppSelector } from "../../../hooks";
-import { userSelector } from "../../../store/reducers/user";
+import { userNameSelector } from "../../../store";
 
 
 
@@ -12,11 +12,9 @@ const TrelelloApp = () =>{
     let [cardModalWindowFlag, setCardModalWindowFlag] = useState(false);
     let [deleteCardFlag, setDeleteCardFlag] = useState(false);
     let [cardModalWindowTitle, setCardModalWindowTitle] = useState('');
-    let [deleteCommentName, setDeleteCommentName] = useState('');
-    let [cardId, setCardId] = useState<string>();
-    let [modalWindowRowName, setModalWindowRowName] = useState<string>();
-    let [editedCardTitle, _] = useState(''); 
-    const userName = useAppSelector(userSelector.userName);
+    let [cardId, setCardId] = useState('');
+    let [modalWindowRowName, setModalWindowRowName] = useState('');
+    const userName = useAppSelector(userNameSelector);
 
     function getClickedCardTitleAndSetModalFlagTitle(title:string, flag:boolean, columnTitle:string, cardId:string){
        setCardModalWindowTitle(title);
@@ -30,15 +28,12 @@ const TrelelloApp = () =>{
         setCardModalWindowFlag(false);
     }
     
-    
-
     return(
         <Wrapper>
             {cardModalWindowFlag === false ? null
             :
             <CardModalWindow
                 modalWindowRowName={modalWindowRowName}
-                takeDeleteCommentName={setDeleteCommentName}
                 getEditedCardTitle={setCardModalWindowTitle}
                 cardId = {cardId}
                 activateDeleteCardButton={activateDeleteCardButton}
@@ -57,10 +52,7 @@ const TrelelloApp = () =>{
             <MainBody>
                 <TrelelloCardField
                 setCardModalWindowTitleFunction={setCardModalWindowTitle}
-                takeRenameCardTitle={editedCardTitle}
-                takeDeleteCommentName={deleteCommentName}
                 changeActivateDeleteButtonFlag={activateDeleteCardButton}
-                activateDeleteCardButtonTitle={cardModalWindowTitle}
                 activateDeleteCardButtonFlag={deleteCardFlag}
                 getClickedCardTitle={getClickedCardTitleAndSetModalFlagTitle}
                 />

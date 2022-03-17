@@ -1,2 +1,3 @@
 export {default} from './reducer';
-export * as userSelector from './selector';
+export {addUserName} from './reducer'
+export {userNameSelector} from './selector';

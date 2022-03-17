@@ -1,28 +1,18 @@
+import { FieldRenderProps } from "react-final-form";
 import styled from "styled-components";
 
 
-
-interface userNameInputProps{
-    name:string;
-    value:string;
-    autoComplete:string;
-    onChange: Function;
-}  
-
-const UserNameInput = (props:any) =>{
+type Props = FieldRenderProps<string>
+const Input = ({input, meta}:Props) =>{
     return(
-        <>
-            <Input
-                name={props.name}
-                value={props.value}
-                autoComplete={props.autoComplete}
-                onChange={props.onChange}
+            <Root
+               {...input}
+               autoComplete='off'
             />
-        </>
     )
 }
 
-export const Input = styled.input`
+export const Root = styled.input`
     padding: 20px 0px;
     outline: none;
     font-size: 20px;
@@ -45,5 +35,4 @@ export const Input = styled.input`
         }
     }
 `
-
-export default UserNameInput;
+export default Input

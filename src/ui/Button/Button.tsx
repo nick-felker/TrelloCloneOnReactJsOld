@@ -1,24 +1,23 @@
 import styled from "styled-components";
 
-interface SubmitUserNameButtonProps{
+interface SubmitButtonProps{
+    text:string;   
+}
+
+
+const Button = ({text}:SubmitButtonProps) =>{
+    return(
+            <Root
+               type='submit'
+            >
+                {text} 
+            </Root>
+    )
     
 }
 
 
-const SubmitUserNameButton = (props:SubmitUserNameButtonProps) =>{
-    return(
-        <>
-            <Button
-               type='submit'
-            >
-                Submit
-            </Button>
-        </>
-    )
-}
-
-
-const Button = styled.button`
+export const Root = styled.button`
     outline: none;
     margin-top: 40px;
     cursor: pointer;
@@ -30,5 +29,5 @@ const Button = styled.button`
     padding: 15px 20px;
     border-radius: 5px;
 `
+export default Button;
 
-export default SubmitUserNameButton 

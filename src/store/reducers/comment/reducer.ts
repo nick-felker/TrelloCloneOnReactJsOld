@@ -1,22 +1,27 @@
 import { createSlice , PayloadAction} from "@reduxjs/toolkit";
-import {comment} from './../../../types/index';
+import {CommentType} from './../../../types/index';
 
-interface comments{
-    comments: comment[];
+interface Comments{
+    comments: CommentType[];
 }
 
-const initialState:comments = {
+const initialState:Comments = {
     comments: []
+}
+
+interface AddCommentType{
+    cardId: string;
+    message: string;
 }
 
 export const commentReducer = createSlice({
     name: 'comment',
     initialState, 
     reducers:{
-        addComment: (state, action: PayloadAction<string[]>) =>{
+        addComment: (state, {payload}: PayloadAction<AddCommentType>) =>{
             const newComment = {
-                cardId: action.payload[0],
-                message: action.payload[1],
+                cardId: payload.cardId,
+                message: payload.message,
                 id: Math.random().toString(),
             }
             state.comments.push(newComment);

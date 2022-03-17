@@ -1,35 +1,54 @@
 import { createSlice , PayloadAction} from "@reduxjs/toolkit";
-import {card} from './../../../types/index'
+import {CardType} from './../../../types/index'
 
-interface cardsArray{
-    cards:card[]
+interface CardsArray{
+    cards:CardType[]
 }
 
-const initialState:cardsArray = {
+const initialState:CardsArray = {
     cards: []
 }
 
+interface changeCardType{
+    description?:string;
+    newName?:string;
+    cardId:string;
+}
+interface addCardType{
+    name: string;
+    columnId: string;
+}
 
 export const cardReducer = createSlice({
     name: 'card',
     initialState,
     reducers:{
-        addCard: (state, action: PayloadAction<string[]>) =>{
+        addCard: (state, {payload}: PayloadAction<addCardType>) =>{
            let newCard = {
                id: Math.random().toString(),
-               name: action.payload[0],
-               columnId: action.payload[1],
+               name: payload.name,
+               columnId: payload.columnId,
            }
            state.cards.push(newCard);
         }, 
         deleteCard: (state, action: PayloadAction<string>) =>{
            state.cards = state.cards.filter(card => card.id !== action.payload);
         },
-        setRenameCard: (state, action: PayloadAction<string[]>) =>{
-           state.cards.map(card => card.id === action.payload[0] ? card.name = action.payload[1] : card); 
+        changeCard: (state, {payload}:PayloadAction<changeCardType>) =>{
+            state.cards.map(card => {
+                if(card.id === payload.cardId){
+                    if(payload.newName === undefined) {
+                        card.description = payload.description; 
+                        return;
+                    }
+                    card.name = payload.newName;
+                    
+               }
+           });
+            
         }
     }
 })
 
-export const {addCard, deleteCard, setRenameCard}  = cardReducer.actions;
+export const {addCard, deleteCard, changeCard}  = cardReducer.actions;
 export default cardReducer.reducer;

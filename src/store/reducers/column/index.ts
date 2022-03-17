@@ -1,2 +1,3 @@
 export {default} from './reducer';
-export * as columnSelector from './selector';
+export {columnsSelector} from './selector';
+export {deleteCurrentColumn, changeColumn, addNewColumn} from './reducer';

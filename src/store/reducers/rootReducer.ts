@@ -3,16 +3,13 @@ import addUserName from './user/reducer';
 import columnReducer  from './column/reducer';
 import cardReducer  from "./card/reducer";
 import  commentReducer  from "./comment/reducer";
-import  descriptionReducer  from "./description/reducer";
-
 
 
 const rootReducer = combineReducers({
-    userName: addUserName,
+    user: addUserName,
     column: columnReducer,
     card: cardReducer,
-    description: descriptionReducer,
     comment: commentReducer,
 })
 
-export default rootReducer;
+export default rootReducer
