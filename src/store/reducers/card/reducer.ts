@@ -11,7 +11,7 @@ const initialState:CardsArray = {
 
 interface changeCardType{
     description?:string;
-    newName?:string;
+    name?:string;
     cardId:string;
 }
 interface addCardType{
@@ -35,15 +35,14 @@ export const cardReducer = createSlice({
            state.cards = state.cards.filter(card => card.id !== action.payload);
         },
         changeCard: (state, {payload}:PayloadAction<changeCardType>) =>{
-            state.cards.map(card => {
+            state.cards = state.cards.map(card => {
                 if(card.id === payload.cardId){
-                    if(payload.newName === undefined) {
-                        card.description = payload.description; 
-                        return;
-                    }
-                    card.name = payload.newName;
-                    
-               }
+                    return {...card, ...payload}
+                }
+                else{
+                    return card;
+                }
+            
            });
             
         }

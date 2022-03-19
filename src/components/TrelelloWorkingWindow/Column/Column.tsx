@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { useState } from "react";
 import { Field, Form } from "react-final-form";
-import { addCard, 
+import { addCard,
          deleteCurrentColumn, 
          changeColumn,
          selectCardsByColumnId,
@@ -37,7 +37,7 @@ const Column = (props: columnProps) =>{
     }
 
     function addNewCard(values:AddNewCardFormProps){
-        if(!values.newCardName?.trim()) return
+        if(!values.newCardName?.trim()) return;
         dispatch(addCard({name: values.newCardName, columnId:props.props.id}));
     }
         return(
@@ -85,7 +85,7 @@ const Column = (props: columnProps) =>{
     function renameColumn(values:RenameColumnFormProps){
             if(!values.newColumnName?.trim()) return;
             setEditColumnTitleFlag(false);
-            dispatch(changeColumn({columnId: props.id, newColumnName:values.newColumnName}))
+            dispatch(changeColumn({columnId: props.id, name:values.newColumnName}))
     }
 
     function deleteColumn(title:string){

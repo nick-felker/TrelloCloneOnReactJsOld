@@ -10,6 +10,7 @@ import { deleteCard,
          userNameSelector, 
          selectDescriptionByCardId,
          RootState,
+         selectCardById,
          selectCommentsByCardId
         } from "../../store";
 import {CommentType} from './../../types';
@@ -29,8 +30,7 @@ const CardModalWindow = (props:CardModalWindowProps) =>{
     const [editCardTitleFlag, setEditCardTitleFlag] = useState(false);
     const [editDescriptionFlag, setEditDescriptionFlag] = useState(false);
     const dispatch = useAppDispatch();
-    const description = useAppSelector((state:RootState)=> selectDescriptionByCardId(state, props.cardId));
-    
+    const card = useAppSelector((state:RootState)=> selectCardById(state, props.cardId));
     const commentsArray = useAppSelector((state:RootState)=> selectCommentsByCardId(state,props.cardId));
    interface SetDescriptionFormProps{
     description:string;
@@ -61,13 +61,11 @@ const CardModalWindow = (props:CardModalWindowProps) =>{
 
     function saveEditedCardTitle(values:NewCardNameFormProps){
         if(!values.newCardName?.trim()) return;
-        if(props.cardId === undefined) return;
-        dispatch(changeCard({cardId: props.cardId, newName:values.newCardName}))
+        dispatch(changeCard({cardId: props.cardId, name:values.newCardName}))
         props.getEditedCardTitle(values.newCardName)
         setEditCardTitleFlag(false);
     }
     function deleteCardFunction(){
-        if(props.cardId === undefined) return;
         props.hideCardModalWindow(false);
         dispatch(deleteCard(props.cardId));
     }
@@ -125,7 +123,7 @@ const CardModalWindow = (props:CardModalWindowProps) =>{
                         <DescriptionWrapperTitle>Description</DescriptionWrapperTitle>
                         {editDescriptionFlag === false ?
                         <DescriptionWrapperText onClick={()=>setEditDescriptionFlag(true)}>
-                            {description}
+                            {card.description}
                         </DescriptionWrapperText>
                         :
                         <Form

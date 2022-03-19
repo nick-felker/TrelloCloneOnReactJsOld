@@ -16,7 +16,7 @@ const initialState:Columns = {
 
 interface ChangeColumnType{
     columnId: string;
-    newColumnName: string;
+    name: string;
 }
 
 export const columnReducer = createSlice({
@@ -27,10 +27,10 @@ export const columnReducer = createSlice({
             state.columns.push({id: Math.random().toString(), name: action.payload});
         },
         deleteCurrentColumn: (state, action: PayloadAction<string>) =>{
-           state.columns = state.columns.filter(column => column.name !== action.payload)
+           state.columns = state.columns.filter((column:ColumnType) => column.name !== action.payload)
         },
         changeColumn: (state, {payload}: PayloadAction<ChangeColumnType>) =>{
-           state.columns.map(column => column.id === payload.columnId ? column.name = payload.newColumnName : null);
+           state.columns = state.columns.map((column:ColumnType) => column.id === payload.columnId ? {...column, ...payload} : column);
             
         },
     }

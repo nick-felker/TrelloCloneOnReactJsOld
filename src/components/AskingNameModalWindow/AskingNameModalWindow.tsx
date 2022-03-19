@@ -48,29 +48,6 @@ const AskingNameModalWindow = () =>{
 const UserNameSpan = styled.span`
     font-weight: bold;
 `
-const Root = styled.input`
-    padding: 20px 0px;
-    outline: none;
-    font-size: 20px;
-    width: 320px;
-    text-align: center;
-    ::placeholder{
-        font-size: 15px;
-        text-transform: uppercase;
-    }
-    :hover{
-        ::placeholder{
-            
-            color: white;
-            transition: 0.5s;
-        }
-    }
-    :focus{
-        ::placeholder{
-            color: white;
-        }
-    }
-`
 const WindowOverlay = styled.div`
     display: flex;
     align-items: flex-start;
@@ -125,5 +102,4 @@ const Wrapper = styled.div`
     margin-top: 10%;
     
 `
-
 export default AskingNameModalWindow;
